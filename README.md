@@ -1,26 +1,31 @@
-Nhóm 8 - SOKOBAN GAME
-- 21110254 Nguyễn Hoàng Phương Ngân 
+# Nhóm 8 - SOKOBAN GAME
+
+- 21110254 Nguyễn Hoàng Phương Ngân
 - 21110858 Nguyễn Minh Trí
-- 20161047 Nguyễn Bùi Minh Nhật
+- 20161347 Nguyễn Bùi Minh Nhật
 
+## Làm xong push lên với step sau
 
-## Lam xong luon push len
-kiem tra tinh trang file trong git
+kiểm tra tình trạng git với :
+
 ```
 git status
 ```
 
-1. them vao git stash
+1. Thêm vào các thay đổi vào chuẩn bị commit
+
 ```
 git add .
 ```
 
-2. them loi nhan cho thay doi
+2. Thêm lời nhắn vào thay đổi
+
 ```
-git commit -m "vua thay doi gi"
+git commit -m "feat: I have add 1 more feature"
 ```
 
-3. day code len kho remote
+3. Đẩy code lên remote
+
 ```
 git push origin
 ```
