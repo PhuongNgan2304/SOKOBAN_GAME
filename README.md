@@ -1,4 +1,4 @@
-Nhóm 8 - SOKOBAN GAME
+# Nhóm 8 - SOKOBAN GAME
 - 21110254 Nguyễn Hoàng Phương Ngân 
 - 21110858 Nguyễn Minh Trí
 - 20161047 Nguyễn Bùi Minh Nhật
