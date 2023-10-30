@@ -28,3 +28,15 @@ git commit -m "feat: I have add 1 more feature"
 ```
 git push origin
 ```
+
+
+## Hướng dẫn cài python sử dụng trên vscode
+Dùng lệnh `python --version` nếu bị lỗi thì fix ở link dưới
+- https://bobbyhadz.com/blog/python-was-not-found-run-without-arguments-to-install
+
+Cách tạo virtual trên python
+- Dùng lệnh `python -m venv venv`
+- Truy cập vào env để sử dụng `venv\Scripts\activate`
+- Muốn thoát sử dụng `deactivate`
+- Lệnh liệt kê gói cần cài đặt `pip freeze > requirements.txt`
+- Lệnh tải các gói cần cài đặt từ file requirements.txt `pip install -r requirements.txt`
