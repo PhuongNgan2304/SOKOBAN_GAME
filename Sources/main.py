@@ -11,9 +11,12 @@ import astar1
 import time
 ''' Timeout của mỗi map là 30 phút  '''
 TIME_OUT = 1800
+#!!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
 ''' lấy path của folder testcases và checkpoints '''
 path_board = os.getcwd() + '\\..\\Testcases'
 path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
+# path_board = 'D:/HOC_KY_1_NAM_3/AI/SOKOBAN_GAME-main/Testcases'
+# path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/SOKOBAN_GAME-main/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
 def get_boards():
@@ -41,14 +44,14 @@ def get_check_points():
 ''' chuyển đổi các ký tự trong một hàng từ file TXT sang ký tự tượng trưng để hiện thị map trong game'''
 def format_row(row):
     for i in range(len(row)):
-        if row[i] == '1':
-            row[i] = '#'
-        elif row[i] == 'p':
-            row[i] = '@'
-        elif row[i] == 'b':
-            row[i] = '$'
-        elif row[i] == 'c':
-            row[i] = '%'
+        if row[i] == '1': #wall
+            row[i] = '#' #wall
+        elif row[i] == 'p': #dog
+            row[i] = '@' #dog
+        elif row[i] == 'b': #bone
+            row[i] = '$' #bone
+        elif row[i] == 'c': #house
+            row[i] = '%' #house
 
 ''' chuyển đổi ký tự checkpoint từ file txt sao chép sang một mảng '''
 def format_check_points(check_points):
@@ -99,11 +102,11 @@ LẤY CÁC TÀI SẢN
 '''
 assets_path = os.getcwd() + "\\..\\Assets"  # Đường dẫn đến thư mục chứa tài sản
 os.chdir(assets_path)  # Thay đổi thư mục làm việc hiện tại thành thư mục tài sản
-player = pygame.image.load(os.getcwd() + '\\player.png')  # Tải hình ảnh người chơi
-wall = pygame.image.load(os.getcwd() + '\\wall.png')  # Tải hình ảnh tường
-box = pygame.image.load(os.getcwd() + '\\box.png')  # Tải hình ảnh hộp
-point = pygame.image.load(os.getcwd() + '\\point.png')  # Tải hình ảnh điểm kiểm tra
-space = pygame.image.load(os.getcwd() + '\\space.png')  # Tải hình ảnh không gian
+player = pygame.image.load(os.getcwd() + '\\corgi_new.png')  # Tải hình ảnh người chơi
+wall = pygame.image.load(os.getcwd() + '\\wall_new.png')  # Tải hình ảnh tường
+box = pygame.image.load(os.getcwd() + '\\bone_new2.png')  # Tải hình ảnh hộp
+point = pygame.image.load(os.getcwd() + '\\house_new2.png')  # Tải hình ảnh điểm kiểm tra
+space = pygame.image.load(os.getcwd() + '\\grass_new.jpg')  # Tải hình ảnh không gian
 arrow_left = pygame.image.load(os.getcwd() + '\\arrow_left.png')  # Tải hình ảnh mũi tên trái
 arrow_right = pygame.image.load(os.getcwd() + '\\arrow_right.png')  # Tải hình ảnh mũi tên phải
 init_background = pygame.image.load(os.getcwd() + '\\init_background.png')  # Tải hình ảnh nền khởi tạo
@@ -242,7 +245,7 @@ def sokoban():
 # HIỂN THỊ MÀN HÌNHHÌNH BAN ĐẦU
 def initGame(map):
     titleSize = pygame.font.Font('gameFont.ttf', 60)
-    titleText = titleSize.render('Sokoban(Nhóm 8)', True, WHITE)
+    titleText = titleSize.render('Corgi Brings Bones', True, WHITE)
     titleRect = titleText.get_rect(center=(320, 80))
     screen.blit(titleText, titleRect)
 

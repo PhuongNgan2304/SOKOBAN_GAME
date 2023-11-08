@@ -38,5 +38,5 @@ Cách tạo virtual trên python
 - Dùng lệnh `python -m venv venv`
 - Truy cập vào env để sử dụng `venv\Scripts\activate`
 - Muốn thoát sử dụng `deactivate`
-- Lệnh liệt kê gói cần cài đặt `pip freeze > requirements.txt`
 - Lệnh tải các gói cần cài đặt từ file requirements.txt `pip install -r requirements.txt`
+- Lệnh liệt kê gói cần cài đặt `pip freeze > requirements.txt`
