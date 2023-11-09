@@ -9,6 +9,8 @@ import bfs
 import astar
 import astar1
 import time
+
+
 ''' Timeout của mỗi map là 30 phút  '''
 TIME_OUT = 1800
 #!!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
@@ -95,24 +97,24 @@ screen = pygame.display.set_mode((640, 640))  # Khởi tạo màn hình với k�
 pygame.display.set_caption('Corgi Sokoban')  # Đặt tiêu đề cửa sổ là 'Sokoban'
 clock = pygame.time.Clock()  # Tạo một đồng hồ
 BACKGROUND = (0, 0, 0)  # Màu nền đen
-WHITE = (255, 255, 255)  # Màu trắng
+WHITE = (0, 0, 0)  # Màu trắng bị đổi sang đen
 
 '''
 LẤY CÁC TÀI SẢN
 '''
 assets_path = os.getcwd() + "\\..\\Assets"  # Đường dẫn đến thư mục chứa tài sản
 os.chdir(assets_path)  # Thay đổi thư mục làm việc hiện tại thành thư mục tài sản
-player = pygame.image.load(os.getcwd() + '\\corgi_new.png')  # Tải hình ảnh người chơi
-wall = pygame.image.load(os.getcwd() + '\\wall_new.png')  # Tải hình ảnh tường
-box = pygame.image.load(os.getcwd() + '\\bone_new2.png')  # Tải hình ảnh hộp
-point = pygame.image.load(os.getcwd() + '\\house_new2.png')  # Tải hình ảnh điểm kiểm tra
-space = pygame.image.load(os.getcwd() + '\\grass_new.jpg')  # Tải hình ảnh không gian
-arrow_left = pygame.image.load(os.getcwd() + '\\arrow_left.png')  # Tải hình ảnh mũi tên trái
-arrow_right = pygame.image.load(os.getcwd() + '\\arrow_right.png')  # Tải hình ảnh mũi tên phải
-init_background = pygame.image.load(os.getcwd() + '\\init_background.png')  # Tải hình ảnh nền khởi tạo
-loading_background = pygame.image.load(os.getcwd() + '\\loading_background.png')  # Tải hình ảnh nền tải
-notfound_background = pygame.image.load(os.getcwd() + '\\notfound_background.png')  # Tải hình ảnh nền không tìm thấy
-found_background = pygame.image.load(os.getcwd() + '\\found_background.png')  # Tải hình ảnh nền tìm thấy
+player = pygame.image.load(os.getcwd() + '\\image\\corgi_new.png')  # Tải hình ảnh người chơi
+wall = pygame.image.load(os.getcwd() + '\\image\\wall_new.png')  # Tải hình ảnh tường
+box = pygame.image.load(os.getcwd() + '\\image\\bone_new2.png')  # Tải hình ảnh hộp
+point = pygame.image.load(os.getcwd() + '\\image\\house_new2.png')  # Tải hình ảnh điểm kiểm tra
+space = pygame.image.load(os.getcwd() + '\\image\\grass_new.jpg')  # Tải hình ảnh không gian
+arrow_left = pygame.image.load(os.getcwd() + '\\image\\arrow_left.png')  # Tải hình ảnh mũi tên trái
+arrow_right = pygame.image.load(os.getcwd() + '\\image\\arrow_right.png')  # Tải hình ảnh mũi tên phải
+init_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền khởi tạo
+loading_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền tải
+notfound_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền không tìm thấy
+found_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền tìm thấy
 
 '''
 HIỂN THỊ BẢN ĐỒ CHO TRÒ CHƠI
@@ -155,6 +157,10 @@ end_time = 0
 steps = 0
 initial_memory = 0
 
+## normal playing 
+# def normal_playing(event) :
+    
+
 def sokoban():
     running = True
     global sceneState
@@ -174,12 +180,16 @@ def sokoban():
             list_check_point = check_points[mapNumber]
             # Bắt đầu đếm thời gian
             start_time = time.time()
-            if algorithm == "Euclidean Distance Heuristic":
-                list_board = astar1.AStar_Search1(maps[mapNumber], list_check_point)
+            if algorithm == "Normal":
+                sceneState = "normalplaying"
+            elif algorithm == "Manhattan Distance Heuristic":
+                list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Manhattan Distance Heuristic":
                 list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
             else:
                 list_board = bfs.BFS_search(maps[mapNumber], list_check_point)
+                
+            
             # Dừng đếm thời gian
             end_time = time.time()
             if len(list_board) > 0:
