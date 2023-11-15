@@ -8,6 +8,8 @@ from pygame.constants import KEYDOWN
 import bfs
 import astar
 import astar1
+import best_first_search
+import UCS
 import time
 
 # https://docs.google.com/document/d/118NqEutRUE-oxi2sj6qA7EeEyp5Fw9HK/edit#heading=h.49x2ik5
@@ -16,10 +18,10 @@ import time
 TIME_OUT = 1800
 #!!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
 ''' lấy path của folder testcases và checkpoints '''
-path_board = os.getcwd() + '\\..\\Testcases'
-path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
-# path_board = 'D:/HOC_KY_1_NAM_3/AI/SOKOBAN_GAME-main/Testcases'
-# path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/SOKOBAN_GAME-main/Checkpoints'
+# path_board = os.getcwd() + '\\..\\Testcases'
+# path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
+path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_GITHUB/SOKOBAN_GAME/Testcases'
+path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_GITHUB/SOKOBAN_GAME/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
 def get_boards():
@@ -183,10 +185,16 @@ def sokoban():
             start_time = time.time()
             if algorithm == "Normal":
                 sceneState = "normalplaying"
+            elif  algorithm == "Euclidean Distance Heuristic":
+                list_board = astar1.AStar_Search1(maps[mapNumber], list_check_point)
+            # elif algorithm == "Manhattan Distance Heuristic":
+            #     list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Manhattan Distance Heuristic":
                 list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
-            elif algorithm == "Manhattan Distance Heuristic":
-                list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
+            elif algorithm == "Best First Search":
+                list_board = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
+            elif algorithm == "Uniform Cost Search":
+                list_board = UCS.UCS_Search(maps[mapNumber], list_check_point)
             else:
                 list_board = bfs.BFS_search(maps[mapNumber], list_check_point)
                 
@@ -245,6 +253,10 @@ def sokoban():
                         algorithm = "Manhattan Distance Heuristic"
                     elif algorithm == "Manhattan Distance Heuristic":
                         algorithm = "BFS"
+                    elif algorithm == "BFS":
+                        algorithm = "Best First Search"
+                    elif algorithm == "Best First Search":
+                        algorithm = "Uniform Cost Search"
                     else:
                         algorithm = "Euclidean Distance Heuristic"
 

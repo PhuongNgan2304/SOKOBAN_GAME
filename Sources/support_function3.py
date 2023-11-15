@@ -3,42 +3,32 @@ import math
 TIME_OUT = 1800
 '''
 //===================================//
-//      CÁC HÀM HỖ TRỢ CHO ASTAR1   //
+//      CÁC HÀM HỖ TRỢ CHO UCS      //
 //=================================//
 '''
 class state:
     def __init__(self, board, state_parent, list_check_point):
         self.board = board
         self.state_parent = state_parent
-        self.cost = 1 #g(N)
-        self.heuristic = 0 #h(n)
+        if state_parent is None:
+            self.cost = 0 # g(N), this is the start state
+        else:
+            self.cost = state_parent.cost + 1 # g(N), increment cost by 1 for the move
         self.check_points = deepcopy(list_check_point)
-    
+
     def get_line(self):
         if self.state_parent is None:
             return [self.board]
         return (self.state_parent).get_line() + [self.board]
-
-    def compute_euclidean_heuristic(self):
-        list_boxes = find_boxes_position(self.board)
-        if self.heuristic == 0:
-            total_distance = 0
-            for i in range(len(list_boxes)):
-                box = list_boxes[i]
-                checkpoint = self.check_points[i]
-                distance = math.sqrt((box[0] - checkpoint[0])**2 + (box[1] - checkpoint[1])**2)
-                total_distance += distance
-            self.heuristic = self.cost + total_distance
-        return self.heuristic
-
+    
     def __gt__(self, other):
-        if self.compute_euclidean_heuristic() > other.compute_euclidean_heuristic():
+        if self.cost > other.cost:
             return True
         else:
             return False
 
     def __lt__(self, other):
-        if self.compute_euclidean_heuristic() < other.compute_euclidean_heuristic():
+        if self.cost < other.cost:
             return True
         else:
             return False
