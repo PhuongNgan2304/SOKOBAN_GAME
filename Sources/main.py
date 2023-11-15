@@ -10,6 +10,7 @@ import astar
 import astar1
 import time
 
+# https://docs.google.com/document/d/118NqEutRUE-oxi2sj6qA7EeEyp5Fw9HK/edit#heading=h.49x2ik5
 
 ''' Timeout của mỗi map là 30 phút  '''
 TIME_OUT = 1800
