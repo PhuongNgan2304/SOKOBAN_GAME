@@ -2,16 +2,16 @@ from copy import deepcopy
 import math
 TIME_OUT = 1800
 '''
-//===================================//
-//      CÁC HÀM HỖ TRỢ CHO ASTAR1   //
-//=================================//
+//===============================================//
+//      CÁC HÀM HỖ TRỢ CHO BEST FIRST SEARCH     //
+//===============================================//
 '''
+
 class state:
     def __init__(self, board, state_parent, list_check_point):
         self.board = board
         self.state_parent = state_parent
-        self.cost = 1 #g(N)
-        self.heuristic = 0 #h(n)
+        self.heuristic = 0 #h(n), không cộng g(n)
         self.check_points = deepcopy(list_check_point)
     
     def get_line(self):
@@ -19,7 +19,7 @@ class state:
             return [self.board]
         return (self.state_parent).get_line() + [self.board]
 
-    def compute_euclidean_heuristic(self):
+    def compute_euclidean_heuristic_for_best_first_search(self):
         list_boxes = find_boxes_position(self.board)
         if self.heuristic == 0:
             total_distance = 0
@@ -28,17 +28,17 @@ class state:
                 checkpoint = self.check_points[i]
                 distance = math.sqrt((box[0] - checkpoint[0])**2 + (box[1] - checkpoint[1])**2)
                 total_distance += distance
-            self.heuristic = self.cost + total_distance
+            self.heuristic = total_distance
         return self.heuristic
 
     def __gt__(self, other):
-        if self.compute_euclidean_heuristic() > other.compute_euclidean_heuristic():
+        if self.compute_euclidean_heuristic_for_best_first_search() > other.compute_euclidean_heuristic_for_best_first_search():
             return True
         else:
             return False
 
     def __lt__(self, other):
-        if self.compute_euclidean_heuristic() < other.compute_euclidean_heuristic():
+        if self.compute_euclidean_heuristic_for_best_first_search() < other.compute_euclidean_heuristic_for_best_first_search():
             return True
         else:
             return False
