@@ -12,16 +12,17 @@ import best_first_search
 import UCS
 import time
 
+# https://github.com/PhuongNgan2304/SOKOBAN_GAME
 # https://docs.google.com/document/d/118NqEutRUE-oxi2sj6qA7EeEyp5Fw9HK/edit#heading=h.49x2ik5
 
 ''' Timeout của mỗi map là 30 phút  '''
 TIME_OUT = 1800
 #!!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
 ''' lấy path của folder testcases và checkpoints '''
-# path_board = os.getcwd() + '\\..\\Testcases'
-# path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
-path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_GITHUB/SOKOBAN_GAME/Testcases'
-path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_GITHUB/SOKOBAN_GAME/Checkpoints'
+path_board = os.getcwd() + '\\..\\Testcases'
+path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
+# path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_GITHUB/SOKOBAN_GAME/Testcases'
+# path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_GITHUB/SOKOBAN_GAME/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
 def get_boards():
@@ -170,25 +171,26 @@ def sokoban():
     global loading
     global algorithm
     global list_board
+    list_board = None
     global mapNumber
     stateLength = 0
     currentState = 0
     found = True
+    
 
     while running:
         screen.blit(init_background, (0, 0))
         if sceneState == "init":
             initGame(maps[mapNumber])
+        
         if sceneState == "executing":
             list_check_point = check_points[mapNumber]
             # Bắt đầu đếm thời gian
             start_time = time.time()
-            if algorithm == "Normal":
+            if algorithm == "NORMAL":
                 sceneState = "normalplaying"
-            elif  algorithm == "Euclidean Distance Heuristic":
+            elif algorithm == "Euclidean Distance Heuristic":
                 list_board = astar1.AStar_Search1(maps[mapNumber], list_check_point)
-            # elif algorithm == "Manhattan Distance Heuristic":
-            #     list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Manhattan Distance Heuristic":
                 list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Best First Search":
@@ -198,10 +200,9 @@ def sokoban():
             else:
                 list_board = bfs.BFS_search(maps[mapNumber], list_check_point)
                 
-            
             # Dừng đếm thời gian
             end_time = time.time()
-            if len(list_board) > 0:
+            if list_board is not None and len(list_board) > 0:
                 sceneState = "playing"
                 stateLength = len(list_board[0])
                 currentState = 0
@@ -209,7 +210,8 @@ def sokoban():
                 print(f"  Map: Level {mapNumber + 1} ")
                 #  thời gian giải thuật
                 print(f"  Thời gian: {elapsed_time} seconds")
-                    
+            elif sceneState == "normalplaying":
+                continue
             else:
                 sceneState = "end"
                 found = False
@@ -225,40 +227,51 @@ def sokoban():
                 notfoundGame()
 
         if sceneState == "playing":
-            clock.tick(2)
+            clock.tick(20)
             renderMap(list_board[0][currentState])
             currentState = currentState + 1
             if currentState == stateLength:
                 sceneState = "end"
                 found = True
-                steps = stateLength  # Đặ số bước là chiều dài trạng thái 
+                steps = stateLength  # Đặt số bước là chiều dài trạng thái 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT and sceneState == "init":
-                    if mapNumber < len(maps) - 1:
-                        mapNumber = mapNumber + 1
-                if event.key == pygame.K_LEFT and sceneState == "init":
-                    if mapNumber > 0:
-                        mapNumber = mapNumber - 1
                 if event.key == pygame.K_RETURN:
                     if sceneState == "init":
                         sceneState = "loading"
                     if sceneState == "end":
                         sceneState = "init"
-                if event.key == pygame.K_SPACE and sceneState == "init":
-                    if algorithm == "Euclidean Distance Heuristic":
-                        algorithm = "Manhattan Distance Heuristic"
-                    elif algorithm == "Manhattan Distance Heuristic":
-                        algorithm = "BFS"
-                    elif algorithm == "BFS":
-                        algorithm = "Best First Search"
-                    elif algorithm == "Best First Search":
-                        algorithm = "Uniform Cost Search"
-                    else:
-                        algorithm = "Euclidean Distance Heuristic"
+                if sceneState == "init":
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RIGHT:
+                            if mapNumber < len(maps) - 1:
+                                mapNumber = mapNumber + 1
+                        if event.key == pygame.K_LEFT:
+                            if mapNumber > 0:
+                                mapNumber = mapNumber - 1
+                        if event.key == pygame.K_SPACE:
+                            if algorithm == "Euclidean Distance Heuristic":
+                                algorithm = "Manhattan Distance Heuristic"
+                            elif algorithm == "Manhattan Distance Heuristic":
+                                algorithm = "BFS"
+                            elif algorithm == "BFS":
+                                algorithm = "Best First Search"
+                            elif algorithm == "Best First Search":
+                                algorithm = "Uniform Cost Search"
+                            elif algorithm == "Uniform Cost Search":
+                                algorithm = "NORMAL"
+                            else:
+                                algorithm = "Euclidean Distance Heuristic"
+                if sceneState == "normalplaying":
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RIGHT:
+                            print('RIGT')
+                        if event.key == pygame.K_LEFT:
+                            print('LEFT')
+
 
         pygame.display.flip()
 
