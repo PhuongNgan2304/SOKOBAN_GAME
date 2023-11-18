@@ -196,9 +196,9 @@ def sokoban():
                 list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Best First Search":
                 list_board = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
-            # elif algorithm == "Uniform Cost Search":
-            #     list_board = ucs.UCS_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Uniform Cost Search":
+                list_board = ucs.UCS_Search(maps[mapNumber], list_check_point)
+            elif algorithm == "DFS":
                 list_board = dfs.DFS_search(maps[mapNumber], list_check_point)
             else:
                 list_board = bfs.BFS_search(maps[mapNumber], list_check_point)
@@ -261,6 +261,8 @@ def sokoban():
                             elif algorithm == "Manhattan Distance Heuristic":
                                 algorithm = "BFS"
                             elif algorithm == "BFS":
+                                algorithm = "DFS"
+                            elif algorithm == "DFS":
                                 algorithm = "Best First Search"
                             elif algorithm == "Best First Search":
                                 algorithm = "Uniform Cost Search"
