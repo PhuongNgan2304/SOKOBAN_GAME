@@ -9,7 +9,8 @@ import bfs
 import astar
 import astar1
 import best_first_search
-import UCS
+import ucs
+import dfs
 import time
 
 # https://github.com/PhuongNgan2304/SOKOBAN_GAME
@@ -195,8 +196,10 @@ def sokoban():
                 list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Best First Search":
                 list_board = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
+            # elif algorithm == "Uniform Cost Search":
+            #     list_board = ucs.UCS_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Uniform Cost Search":
-                list_board = UCS.UCS_Search(maps[mapNumber], list_check_point)
+                list_board = dfs.DFS_search(maps[mapNumber], list_check_point)
             else:
                 list_board = bfs.BFS_search(maps[mapNumber], list_check_point)
                 

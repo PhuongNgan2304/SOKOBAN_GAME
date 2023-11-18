@@ -1,5 +1,6 @@
-import support_function3 as spf
+import support_function as spf
 import time
+from copy import deepcopy
 from queue import PriorityQueue
 import psutil
 import os
@@ -11,6 +12,33 @@ import os
 //========================//
 '''
 
+class state:
+    def __init__(self, board, state_parent, list_check_point):
+        self.board = board
+        self.state_parent = state_parent
+        if state_parent is None:
+            self.cost = 0 # g(N), this is the start state
+        else:
+            self.cost = state_parent.cost + 1 # g(N), increment cost by 1 for the move
+        self.check_points = deepcopy(list_check_point)
+
+    def get_line(self):
+        if self.state_parent is None:
+            return [self.board]
+        return (self.state_parent).get_line() + [self.board]
+    
+    def __gt__(self, other):
+        if self.cost > other.cost:
+            return True
+        else:
+            return False
+
+    def __lt__(self, other):
+        if self.cost < other.cost:
+            return True
+        else:
+            return False
+
 def UCS_Search(board, list_check_point):
     start_time = time.time()
 
@@ -18,7 +46,7 @@ def UCS_Search(board, list_check_point):
         print("Found Win")
         return [board]
 
-    start_state = spf.state(board, None, list_check_point)
+    start_state = state(board, None, list_check_point)
     list_state = [start_state]
 
     cost_queue = PriorityQueue()
@@ -53,7 +81,7 @@ def UCS_Search(board, list_check_point):
                 continue
             
             '''TẠO TRẠNG THÁI MỚI'''
-            new_state = spf.state(new_board, now_state, list_check_point)
+            new_state = state(new_board, now_state, list_check_point)
 
             '''KIỂM TRA XEM TRẠNG THÁI MỚI CÓ PHẢI LÀ TRẠNG THÁI KẾT THÚC KHÔNG'''
             if spf.check_win(new_board, list_check_point):

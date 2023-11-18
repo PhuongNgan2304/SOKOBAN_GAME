@@ -1,8 +1,10 @@
-import support_function1 as spf
+import support_function as spf
 import time
 from queue import PriorityQueue
 import psutil
 import os
+from copy import deepcopy
+import math
 
 '''
 //========================//
@@ -10,6 +12,42 @@ import os
 //    IMPLEMENTATION     //
 //========================//
 '''
+class state:
+    def __init__(self, board, state_parent, list_check_point):
+        self.board = board
+        self.state_parent = state_parent
+        self.cost = 1 #g(N)
+        self.heuristic = 0 #h(n)
+        self.check_points = deepcopy(list_check_point)
+    
+    def get_line(self):
+        if self.state_parent is None:
+            return [self.board]
+        return (self.state_parent).get_line() + [self.board]
+
+    def compute_euclidean_heuristic(self):
+        list_boxes = spf.find_boxes_position(self.board)
+        if self.heuristic == 0:
+            total_distance = 0
+            for i in range(len(list_boxes)):
+                box = list_boxes[i]
+                checkpoint = self.check_points[i]
+                distance = math.sqrt((box[0] - checkpoint[0])**2 + (box[1] - checkpoint[1])**2)
+                total_distance += distance
+            self.heuristic = self.cost + total_distance
+        return self.heuristic
+
+    def __gt__(self, other):
+        if self.compute_euclidean_heuristic() > other.compute_euclidean_heuristic():
+            return True
+        else:
+            return False
+
+    def __lt__(self, other):
+        if self.compute_euclidean_heuristic() < other.compute_euclidean_heuristic():
+            return True
+        else:
+            return False
 
 def AStar_Search1(board, list_check_point):
     start_time = time.time()
@@ -22,7 +60,7 @@ def AStar_Search1(board, list_check_point):
         return [board]
     
     ''' KHỞI TẠO TRẠNG THÁI BẮT ĐẦU '''
-    start_state = spf.state(board, None, list_check_point)
+    start_state = state(board, None, list_check_point)
     list_state = [start_state]
     
     ''' KHỞI TẠO HÀNG ĐỢI ƯU TIÊN '''
@@ -60,7 +98,7 @@ def AStar_Search1(board, list_check_point):
                 continue
             
             '''TẠO TRẠNG THÁI MỚI'''
-            new_state = spf.state(new_board, now_state, list_check_point)
+            new_state = state(new_board, now_state, list_check_point)
             
             '''KIỂM TRA XEM TRẠNG THÁI MỚI CÓ PHẢI LÀ TRẠNG THÁI KẾT THÚC KHÔNG'''
             if spf.check_win(new_board, list_check_point):
