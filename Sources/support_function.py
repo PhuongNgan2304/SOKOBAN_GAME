@@ -9,7 +9,16 @@ TIME_OUT = 1800
 //      CÁC HÀM HỖ TRỢ     //
 //========================//
 '''
-
+class Result:
+   def __init__(self): 
+        pass 
+   
+   def __init__(self, approved_states, memory, map_level, time, list_board):
+       self.approved_states = approved_states
+       self.memory = memory
+       self.map_level = map_level
+       self.time = time
+       self.list_board = list_board
 
 '''KIỂM TRA XEM BẢNG CÓ PHẢI LÀ MỤC TIÊU HAY KHÔNG'''
 def check_win(board, list_check_point):

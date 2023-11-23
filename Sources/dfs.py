@@ -87,13 +87,25 @@ def DFS_search(board, list_check_point):
            new_state = state(new_board, now_state, list_check_point)
            
            if spf.check_win(new_board, list_check_point):
-               print("\nDepth First Search")
-               print("Found Win")
-               print(" Số trạng thái đã duyệt : {} ".format(len(list_state)))
-               process = psutil.Process(os.getpid())
-               memory_usage = process.memory_info().rss / (1024**2)
-               print(f" Bộ nhớ: {memory_usage} Mb")
-               return (new_state.get_line(), len(list_state))
+                process = psutil.Process(os.getpid())
+                memory_usage = process.memory_info().rss / (1024**2)
+                result = spf.Result()
+                result.approved_states = len(list_state)
+                result.memory = memory_usage
+                result.time = time.time()
+                result.list_board = (new_state.get_line(), len(list_state))
+
+            #    print("\nDepth First Search")
+            #    print("Found Win")
+            #    print(" Số trạng thái đã duyệt : {} ".format(len(list_state)))
+            #    process = psutil.Process(os.getpid())
+            #    memory_usage = process.memory_info().rss / (1024**2)
+            #    print(f" Bộ nhớ: {memory_usage} Mb")
+
+               
+            
+                return result
+           
            
            list_state.append(new_state)
            list_visit.append(new_state)

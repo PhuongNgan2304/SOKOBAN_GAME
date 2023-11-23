@@ -20,10 +20,10 @@ import time
 TIME_OUT = 1800
 #!!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
 ''' lấy path của folder testcases và checkpoints '''
-path_board = os.getcwd() + '\\..\\Testcases'
-path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
-# path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_GITHUB/SOKOBAN_GAME/Testcases'
-# path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_GITHUB/SOKOBAN_GAME/Checkpoints'
+#path_board = os.getcwd() + '\\..\\Testcases'
+#path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
+path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Testcases'
+path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
 def get_boards():
@@ -208,15 +208,16 @@ def sokoban():
             elif algorithm == "Uniform Cost Search":
                 list_board = ucs.UCS_Search(maps[mapNumber], list_check_point)
             elif algorithm == "DFS":
-                list_board = dfs.DFS_search(maps[mapNumber], list_check_point)
+                result = dfs.DFS_search(maps[mapNumber], list_check_point)
             else:
                 list_board = bfs.BFS_search(maps[mapNumber], list_check_point)
-                
+                print(list_board)
+
             # Dừng đếm thời gian
             end_time = time.time()
-            if list_board is not None and len(list_board) > 0:
+            if result.list_board is not None and len(result.list_board) > 0:
                 sceneState = "playing"
-                stateLength = len(list_board[0])
+                stateLength = len(result.list_board[0])
                 currentState = 0
                 elapsed_time = end_time - start_time
                 print(f"  Map: Level {mapNumber + 1} ")
@@ -234,13 +235,13 @@ def sokoban():
 
         if sceneState == "end":
             if found:
-                foundGame(list_board[0][stateLength - 1], steps2)
+                foundGame(result.list_board[0][stateLength - 1], steps2)
             else:
                 notfoundGame()
 
         if sceneState == "playing":
             clock.tick(20)
-            renderMap(list_board[0][currentState])
+            renderMap(result.list_board[0][currentState])
             currentState = currentState + 1
             steps +=1
             font_steps = pygame.font.Font('gameFont.ttf', 20)
@@ -249,14 +250,14 @@ def sokoban():
             screen.blit(text_steps, text_rect_steps)
             if currentState == stateLength:
                 #!!!!!!!!
-                # # Create font and text surfaces
-                # font = pygame.font.Font(None, 24)
-                # state_text = font.render("Số trạng thái đã duyệt: {}".format(stateLength), True, (255, 255, 255))
-                # memory_text = font.render("Bộ nhớ: {} Mb".format(memory_usage), True, (255, 255, 255))
+                # Create font and text surfaces
+                font = pygame.font.Font(None, 24)
+                state_text = font.render("Số trạng thái đã duyệt: {}".format(result.approved_states), True, (255, 255, 255))
+                memory_text = font.render("Bộ nhớ: {} Mb".format(result.memory), True, (255, 255, 255))
 
-                # # Blit text surfaces onto the screen
-                # screen.blit(state_text, (10,10))
-                # screen.blit(memory_text, (10,40))
+                # Blit text surfaces onto the screen
+                screen.blit(state_text, (10,10))
+                screen.blit(memory_text, (10,40))
 
                 steps2 = steps
                 sceneState = "end"
