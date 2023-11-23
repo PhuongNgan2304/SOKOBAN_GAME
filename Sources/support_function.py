@@ -2,6 +2,8 @@ from copy import deepcopy
 import math
 
 TIME_OUT = 1800
+
+#CHECK LẠI SAU CHO CHẮC
 '''
 //========================//
 //      CÁC HÀM HỖ TRỢ     //

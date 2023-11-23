@@ -125,6 +125,10 @@ def renderMap(board):
     width = len(board[0])
     height = len(board)
     indent = (640 - width * 32) / 2.0  # Tính khoảng cách lề , với width là số lượng 
+    # font_steps = pygame.font.Font('gameFont.ttf', 20)
+    # text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
+    # text_rect_steps = text_steps.get_rect(center=(320, 400))
+    # screen.blit(text_steps, text_rect_steps)
     for i in range(height):
         for j in range(width):
             screen.blit(space, (j * 32 + indent, i * 32 + 250))  # Hiển thị không gian
@@ -136,6 +140,7 @@ def renderMap(board):
                 screen.blit(point, (j * 32 + indent, i * 32 + 250))  # Hiển thị điểm kiểm tra
             if board[i][j] == '@':
                 screen.blit(player, (j * 32 + indent, i * 32 + 250))  # Hiển thị người chơi
+    
 
 			
 '''
@@ -156,7 +161,9 @@ loading = False
 ''' HÀM SOKOBAN '''
 start_time = 0
 end_time = 0
-steps = 0
+steps = 0 #để lưu số bước di chuyển
+steps1 = 0 #để lưu lại stateLength
+steps2 = steps #để lưu lại giá trị của steps
 initial_memory = 0
 
 ## normal playing 
@@ -173,6 +180,9 @@ def sokoban():
     stateLength = 0
     currentState = 0
     found = True
+    global steps
+    global steps1
+    global steps2
 
     while running:
         screen.blit(init_background, (0, 0))
@@ -184,7 +194,7 @@ def sokoban():
             start_time = time.time()
             if algorithm == "Normal":
                 sceneState = "normalplaying"
-            elif  algorithm == "Euclidean Distance Heuristic":
+            elif algorithm == "Euclidean Distance Heuristic":
                 list_board = astar1.AStar_Search1(maps[mapNumber], list_check_point)
             # elif algorithm == "Manhattan Distance Heuristic":
             #     list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
@@ -219,18 +229,46 @@ def sokoban():
 
         if sceneState == "end":
             if found:
-                foundGame(list_board[0][stateLength - 1])
+                foundGame(list_board[0][stateLength - 1], steps2)
             else:
                 notfoundGame()
 
         if sceneState == "playing":
-            clock.tick(2)
+            clock.tick(10)
+            #if(currentState < len(list_board[0])):
             renderMap(list_board[0][currentState])
             currentState = currentState + 1
+            steps +=1
+            font_steps = pygame.font.Font('gameFont.ttf', 20)
+            text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
+            text_rect_steps = text_steps.get_rect(topleft=(320, 50)) # Adjust the position as needed
+            screen.blit(text_steps, text_rect_steps)
             if currentState == stateLength:
+                #!!!!!!!!
+                # Create font and text surfaces
+                font = pygame.font.Font(None, 24)
+                state_text = font.render("Số trạng thái đã duyệt: {}".format(stateLength), True, (255, 255, 255))
+                memory_text = font.render("Bộ nhớ: {} Mb".format(memory_usage), True, (255, 255, 255))
+
+                # Blit text surfaces onto the screen
+                screen.blit(state_text, (10,10))
+                screen.blit(memory_text, (10,40))
+
+                steps2 = steps
                 sceneState = "end"
                 found = True
-                steps = stateLength  # Đặ số bước là chiều dài trạng thái 
+                steps = 0
+                steps1 = stateLength # Đặt số bước là chiều dài trạng thái 
+            # if currentState == stateLength:
+            
+            
+            #     steps = stateLength  # Đặ số bước là chiều dài trạng thái
+            
+
+        #  # Cập nhật step và kiểm tra trạng thái chiến thắng
+        # self.step += 1
+        # self.stepLabel["text"] = f"Step: {self.step}"
+        # self.checkWinState()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -264,7 +302,7 @@ def sokoban():
     pygame.quit()
 
 ''' HIỂN THỊ MÀN HÌNH CHÍNH '''
-# HIỂN THỊ MÀN HÌNHHÌNH BAN ĐẦU
+# HIỂN THỊ MÀN HÌNH BAN ĐẦU
 def initGame(map):
     titleSize = pygame.font.Font('gameFont.ttf', 60)
     titleText = titleSize.render('Corgi Brings Bones', True, WHITE)
@@ -275,6 +313,16 @@ def initGame(map):
     desText = desSize.render('Chọn Map:', True, WHITE)
     desRect = desText.get_rect(center=(320, 140))
     screen.blit(desText, desRect)
+
+    font_steps = pygame.font.Font('gameFont.ttf', 20)
+    text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
+    text_rect_steps = text_steps.get_rect(center=(320, 170)) # Use center to show view of steps
+    screen.blit(text_steps, text_rect_steps)
+
+    # font_steps = pygame.font.Font('gameFont.ttf', 20)
+    # text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
+    # text_rect_steps = text_steps.get_rect(topleft=(320, 50)) # Use topleft instead of center
+    # screen.blit(text_steps, text_rect_steps)
 
     desSize = pygame.font.Font('gameFont.ttf', 20)
     desText = desSize.render('Nhấn SPACE để đổi thuật toán', True, WHITE)
@@ -310,8 +358,19 @@ def loadingGame():
     text_rect_2 = text_2.get_rect(center=(320, 100))
     screen.blit(text_2, text_rect_2)
 
-def foundGame(map):
+def foundGame(map, steps):
+    global steps2
     screen.blit(found_background, (0, 0))
+
+    # font_steps = pygame.font.Font('gameFont.ttf', 20)
+    # text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
+    # text_rect_steps = text_steps.get_rect(center=(320, 300)) # Use topleft instead of center
+    # screen.blit(text_steps, text_rect_steps)
+
+    font_steps = pygame.font.Font('gameFont.ttf', 20)
+    text_steps = font_steps.render('Số bước: {}'.format(steps2), True, WHITE)
+    text_rect_steps = text_steps.get_rect(center=(320, 200)) # Use topleft instead of center
+    screen.blit(text_steps, text_rect_steps)
 
     font_1 = pygame.font.Font('gameFont.ttf', 30)
     text_1 = font_1.render('Yeah! Đã tìm thấy lời giải!!!', True, WHITE)
@@ -322,6 +381,7 @@ def foundGame(map):
     text_2 = font_2.render('Nhấn ENTER để tiếp tục', True, WHITE)
     text_rect_2 = text_2.get_rect(center=(320, 600))
     screen.blit(text_2, text_rect_2)
+
 
     renderMap(map)
 
