@@ -239,7 +239,7 @@ def sokoban():
                 notfoundGame()
 
         if sceneState == "playing":
-            clock.tick(2)
+            clock.tick(20)
             renderMap(list_board[0][currentState])
             currentState = currentState + 1
             steps +=1
@@ -249,14 +249,14 @@ def sokoban():
             screen.blit(text_steps, text_rect_steps)
             if currentState == stateLength:
                 #!!!!!!!!
-                # Create font and text surfaces
-                font = pygame.font.Font(None, 24)
-                state_text = font.render("Số trạng thái đã duyệt: {}".format(stateLength), True, (255, 255, 255))
-                memory_text = font.render("Bộ nhớ: {} Mb".format(memory_usage), True, (255, 255, 255))
+                # # Create font and text surfaces
+                # font = pygame.font.Font(None, 24)
+                # state_text = font.render("Số trạng thái đã duyệt: {}".format(stateLength), True, (255, 255, 255))
+                # memory_text = font.render("Bộ nhớ: {} Mb".format(memory_usage), True, (255, 255, 255))
 
-                # Blit text surfaces onto the screen
-                screen.blit(state_text, (10,10))
-                screen.blit(memory_text, (10,40))
+                # # Blit text surfaces onto the screen
+                # screen.blit(state_text, (10,10))
+                # screen.blit(memory_text, (10,40))
 
                 steps2 = steps
                 sceneState = "end"
