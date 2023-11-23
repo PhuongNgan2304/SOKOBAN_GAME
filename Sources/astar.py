@@ -5,6 +5,8 @@ import psutil
 import os
 from copy import deepcopy
 
+#CHECK LẠI SAU CHO CHẮC
+
 '''
 //========================//
 //     GIẢI THUẬT A*      //
