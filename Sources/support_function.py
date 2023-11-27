@@ -3,22 +3,26 @@ import math
 
 TIME_OUT = 1800
 
-#CHECK LẠI SAU CHO CHẮC
 '''
 //========================//
 //      CÁC HÀM HỖ TRỢ     //
 //========================//
 '''
+
+
 class Result:
-   def __init__(self): 
-       self.approved_states = None
-       self.memory = None
-       self.map_level = None
-       self.time = None
-       self.list_board = None
-       self.algorithmName = None
+    def __init__(self):
+        self.approved_states = None
+        self.memory = None
+        self.map_level = None
+        self.time = None
+        self.list_board = None
+        self.algorithmName = None
+
 
 '''KIỂM TRA XEM BẢNG CÓ PHẢI LÀ MỤC TIÊU HAY KHÔNG'''
+
+
 def check_win(board, list_check_point):
     '''trả về True nếu tất cả các điểm kiểm tra được che phủ bởi các hộp'''
     for p in list_check_point:
@@ -26,12 +30,18 @@ def check_win(board, list_check_point):
             return False
     return True
 
+
 '''GÁN MA TRẬN'''
+
+
 def assign_matrix(board):
     '''trả về bảng giống như bảng đầu vào'''
     return [[board[x][y] for y in range(len(board[0]))] for x in range(len(board))]
 
+
 '''TÌM VỊ TRÍ HIỆN TẠI CỦA NGƯỜI CHƠI TRONG BẢNG'''
+
+
 def find_position_player(board):
     '''trả về vị trí của người chơi trong bảng'''
     for x in range(len(board)):
@@ -40,7 +50,10 @@ def find_position_player(board):
                 return (x, y)
     return (-1, -1)  # bảng lỗi
 
+
 '''SO SÁNH 2 BẢNG'''
+
+
 def compare_matrix(board_A, board_B):
     '''trả về True nếu bảng A giống bằng bảng B'''
     if len(board_A) != len(board_B) or len(board_A[0]) != len(board_B[0]):
@@ -51,7 +64,10 @@ def compare_matrix(board_A, board_B):
                 return False
     return True
 
+
 '''KIỂM TRA XEM BẢNG ĐÃ TỒN TẠI TRONG DANH SÁCH ĐÃ ĐI QUA CHƯA'''
+
+
 def is_board_exist(board, list_state):
     '''trả về True nếu có bảng giống trong danh sách'''
     for state in list_state:
@@ -59,35 +75,44 @@ def is_board_exist(board, list_state):
             return True
     return False
 
+
 '''KIỂM TRA XEM CÓ ÍT NHẤT MỘT HỘP NẰM TRÊN ĐIỂM KIỂM TRA KHÔNG'''
+
+
 def is_box_on_check_point(box, list_check_point):
     for check_point in list_check_point:
         if box[0] == check_point[0] and box[1] == check_point[1]:
             return True
     return False
 
+
 '''KIỂM TRA XEM ÍT NHẤT MỘT HỘP CÓ BỊ KẸT CẠN Ở GÓC KHÔNG'''
+
+
 def check_in_corner(board, x, y, list_check_point):
     '''trả về True nếu board[x][y] ở góc'''
-    if board[x-1][y-1] == '#':
-        if board[x-1][y] == '#' and board[x][y-1] == '#':
+    if board[x - 1][y - 1] == '#':
+        if board[x - 1][y] == '#' and board[x][y - 1] == '#':
             if not is_box_on_check_point((x, y), list_check_point):
                 return True
-    if board[x+1][y-1] == '#':
-        if board[x+1][y] == '#' and board[x][y-1] == '#':
+    if board[x + 1][y - 1] == '#':
+        if board[x + 1][y] == '#' and board[x][y - 1] == '#':
             if not is_box_on_check_point((x, y), list_check_point):
                 return True
-    if board[x-1][y+1] == '#':
-        if board[x-1][y] == '#' and board[x][y+1] == '#':
+    if board[x - 1][y + 1] == '#':
+        if board[x - 1][y] == '#' and board[x][y + 1] == '#':
             if not is_box_on_check_point((x, y), list_check_point):
                 return True
-    if board[x+1][y+1] == '#':
-        if board[x+1][y] == '#' and board[x][y+1] == '#':
+    if board[x + 1][y + 1] == '#':
+        if board[x + 1][y] == '#' and board[x][y + 1] == '#':
             if not is_box_on_check_point((x, y), list_check_point):
                 return True
     return False
 
+
 '''TÌM TẤT CẢ VỊ TRÍ HỘP TRÊN BẢNG'''
+
+
 def find_boxes_position(board):
     result = []
     for i in range(len(board)):
@@ -98,22 +123,33 @@ def find_boxes_position(board):
 
 
 '''KIỂM TRA XEM ÍT NHẤT MỘT HỘP CÓ THỂ DI CHUYỂN ÍT NHẤT 1 HƯỚNG'''
+
+
 def is_box_can_be_moved(board, box_position):
-    left_move = (box_position[0], box_position[1] - 1) 
+    left_move = (box_position[0], box_position[1] - 1)
     right_move = (box_position[0], box_position[1] + 1)
     up_move = (box_position[0] - 1, box_position[1])
     down_move = (box_position[0] + 1, box_position[1])
-    if (board[left_move[0]][left_move[1]] == ' ' or board[left_move[0]][left_move[1]] == '%' or board[left_move[0]][left_move[1]] == '@') and board[right_move[0]][right_move[1]] != '#' and board[right_move[0]][right_move[1]] != '$':
+    if (board[left_move[0]][left_move[1]] == ' ' or board[left_move[0]][left_move[1]] == '%' or board[left_move[0]][
+        left_move[1]] == '@') and board[right_move[0]][right_move[1]] != '#' and board[right_move[0]][
+        right_move[1]] != '$':
         return True
-    if (board[right_move[0]][right_move[1]] == ' ' or board[right_move[0]][right_move[1]] == '%' or board[right_move[0]][right_move[1]] == '@') and board[left_move[0]][left_move[1]] != '#' and board[left_move[0]][left_move[1]] != '$':
+    if (board[right_move[0]][right_move[1]] == ' ' or board[right_move[0]][right_move[1]] == '%' or
+        board[right_move[0]][right_move[1]] == '@') and board[left_move[0]][left_move[1]] != '#' and \
+            board[left_move[0]][left_move[1]] != '$':
         return True
-    if (board[up_move[0]][up_move[1]] == ' ' or board[up_move[0]][up_move[1]] == '%' or board[up_move[0]][up_move[1]] == '@') and board[down_move[0]][down_move[1]] != '#' and board[down_move[0]][down_move[1]] != '$':
+    if (board[up_move[0]][up_move[1]] == ' ' or board[up_move[0]][up_move[1]] == '%' or board[up_move[0]][
+        up_move[1]] == '@') and board[down_move[0]][down_move[1]] != '#' and board[down_move[0]][down_move[1]] != '$':
         return True
-    if (board[down_move[0]][down_move[1]] == ' ' or board[down_move[0]][down_move[1]] == '%' or board[down_move[0]][down_move[1]] == '@') and board[up_move[0]][up_move[1]] != '#' and board[up_move[0]][up_move[1]] != '$':
+    if (board[down_move[0]][down_move[1]] == ' ' or board[down_move[0]][down_move[1]] == '%' or board[down_move[0]][
+        down_move[1]] == '@') and board[up_move[0]][up_move[1]] != '#' and board[up_move[0]][up_move[1]] != '$':
         return True
     return False
 
+
 '''KIỂM TRA XEM TẤT CẢ CÁC HỘP CÓ BỊ KẸT CẠN KHÔNG'''
+
+
 def is_all_boxes_stuck(board, list_check_point):
     box_positions = find_boxes_position(board)
     result = True
@@ -124,7 +160,10 @@ def is_all_boxes_stuck(board, list_check_point):
             result = False
     return result
 
+
 '''KIỂM TRA XEM ÍT NHẤT MỘT HỘP CÓ THỂ ĐẾN ĐƯỢC VỊ TRÍ THÀNH CÔNG ÍT NHẤT 1 HƯỚNG'''
+
+
 def is_board_can_not_win(board, list_check_point):
     '''trả về True nếu hộp nằm ở góc của bức tường -> không thể thắng'''
     for x in range(len(board)):
@@ -134,7 +173,10 @@ def is_board_can_not_win(board, list_check_point):
                     return True
     return False
 
+
 '''LẤY BƯỚC TIẾP THEO CÓ THỂ DI CHUYỂN'''
+
+
 def get_next_pos(board, cur_pos):
     '''trả về danh sách vị trí mà người chơi có thể di chuyển đến từ vị trí hiện tại'''
     x, y = cur_pos[0], cur_pos[1]
@@ -177,15 +219,18 @@ def get_next_pos(board, cur_pos):
                 list_can_move.append((x, y + 1))
     return list_can_move
 
+
 '''DI CHUYỂN BẢNG THEO CÁC HƯỚNG NHẤT ĐỊNH'''
+
+
 def move(board, next_pos, cur_pos, list_check_point):
     '''trả về một bảng mới sau khi di chuyển'''
     # TẠO BẢNG MỚI NHƯ BẢNG HIỆN TẠI
-    new_board = assign_matrix(board) 
+    new_board = assign_matrix(board)
     # TÌM VỊ TRÍ TIẾP THEO NẾU DI CHUYỂN ĐẾN HỘP
     if new_board[next_pos[0]][next_pos[1]] == '$':
-        x = 2*next_pos[0] - cur_pos[0]
-        y = 2*next_pos[1] - cur_pos[1]
+        x = 2 * next_pos[0] - cur_pos[0]
+        y = 2 * next_pos[1] - cur_pos[1]
         new_board[x][y] = '$'
     # DI CHUYỂN NGƯỜI CHƠI ĐẾN VỊ TRÍ MỚI
     new_board[next_pos[0]][next_pos[1]] = '@'
@@ -194,9 +239,12 @@ def move(board, next_pos, cur_pos, list_check_point):
     for p in list_check_point:
         if new_board[p[0]][p[1]] == ' ':
             new_board[p[0]][p[1]] = '%'
-    return new_board 
+    return new_board
+
 
 '''TÌM DANH SÁCH CÁC ĐIỂM KIỂM TRA TRÊN BẢNG'''
+
+
 def find_list_check_point(board):
     '''trả về danh sách điểm kiểm tra từ bảng
         nếu không có bất kỳ điểm kiểm tra nào, trả về danh sách trống
@@ -215,3 +263,58 @@ def find_list_check_point(board):
     if num_of_box < len(list_check_point):
         return [(-1, -1)]
     return list_check_point
+
+
+# DI CHUYỂN BẢNG THEO HÀNH ĐỘNG NGƯỜI DÙNG
+def move_board_by_key(board, cur_pos, key, list_check_point):
+    key_list = ['LEFT', 'UP', "RIGHT", "DOWN"]
+    if key in key_list:
+        if key == 'LEFT':
+            next_pos = (cur_pos[0], cur_pos[1] - 1)
+        elif key == 'RIGHT':
+            next_pos = (cur_pos[0], cur_pos[1] + 1)
+        elif key == 'UP':
+            next_pos = (cur_pos[0] - 1, cur_pos[1])
+        elif key == 'DOWN':
+            next_pos = (cur_pos[0] + 1, cur_pos[1])
+
+        # Kiểm tra xem nước đi tiếp theo có hợp lệ hay không
+        if 0 <= next_pos[0] < len(board) and 0 <= next_pos[1] < len(board[0]) and board[next_pos[0]][
+            next_pos[1]] != '#':
+            if board[next_pos[0]][next_pos[1]] == '$':
+                # Kiểm tra xem hộp có thể được đẩy hay không
+                if key == 'LEFT':
+                    next_box_pos = (next_pos[0], next_pos[1] - 1)
+                elif key == 'RIGHT':
+                    next_box_pos = (next_pos[0], next_pos[1] + 1)
+                elif key == 'UP':
+                    next_box_pos = (next_pos[0] - 1, next_pos[1])
+                elif key == 'DOWN':
+                    next_box_pos = (next_pos[0] + 1, next_pos[1])
+                if 0 <= next_box_pos[0] < len(board) and 0 <= next_box_pos[1] < len(board[0]) and (
+                        board[next_box_pos[0]][next_box_pos[1]] == ' ' or board[next_box_pos[0]][
+                    next_box_pos[1]] == '%'):
+                    new_board = move(board, next_pos, cur_pos, list_check_point)
+                    return new_board
+            else:
+                new_board = move(board, next_pos, cur_pos, list_check_point)
+                return new_board
+    return board  # Trả về bảng hiện tại nếu nước đi không hợp lệ
+    if board[next_pos[0]][next_pos[1]] == '$':
+        # Kiểm tra xem hộp có thể được đẩy hay không
+        if key == 'LEFT':
+            next_box_pos = (next_pos[0], next_pos[1] - 1)
+        elif key == 'RIGHT':
+            next_box_pos = (next_pos[0], next_pos[1] + 1)
+        elif key == 'UP':
+            next_box_pos = (next_pos[0] - 1, next_pos[1])
+        elif key == 'DOWN':
+            next_box_pos = (next_pos[0] + 1, next_pos[1])
+        if 0 <= next_box_pos[0] < len(board) and 0 <= next_box_pos[1] < len(board[0]) and (board[next_box_pos[0]][next_box_pos[1]] == ' ' or board[next_box_pos[0]][next_box_pos[1]] == '%'):
+            new_board = move(board, next_pos, cur_pos, list_check_point)
+            return new_board
+    else:
+        new_board = move(board, next_pos, cur_pos, list_check_point)
+        return new_board
+
+    return board  # Trả về bảng hiện tại nếu nước đi không hợp lệ

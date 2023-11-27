@@ -107,8 +107,15 @@ def AStar_Search(board, list_check_point):
                 print("  Số trạng thái đã duyệt : {} ".format(len(list_state)))
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024**2)
-                print(f"  Bộ nhớ: {memory_usage} Mb")
-                return (new_state.get_line(), len(list_state))
+
+                result = spf.Result()
+                result.approved_states = len(list_state)
+                result.memory = memory_usage
+                result.time = time.time()
+                result.list_board = (new_state.get_line(), len(list_state))
+                result.algorithmName = "Manhattan Distance Heuristic"
+                
+                return result
             
             '''THÊM TRẠNG THÁI MỚI VÀO HÀNG ĐỢI ƯU TIÊN VÀ DANH SÁCH ĐÃ ĐƯỢC DUYỆT'''
             list_state.append(new_state)

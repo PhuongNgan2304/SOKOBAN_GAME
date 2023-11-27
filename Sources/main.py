@@ -12,13 +12,14 @@ import best_first_search
 import ucs
 import dfs
 import time
+import support_function as spf
 
 # https://github.com/PhuongNgan2304/SOKOBAN_GAME
 # https://docs.google.com/document/d/118NqEutRUE-oxi2sj6qA7EeEyp5Fw9HK/edit#heading=h.49x2ik5
 
 ''' Timeout của mỗi map là 30 phút  '''
 TIME_OUT = 1800
-#!!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
+# !!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
 ''' lấy path của folder testcases và checkpoints '''
 path_board = os.getcwd() + '\\..\\Testcases'
 path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
@@ -26,6 +27,8 @@ path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
 # path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
+
+
 def get_boards():
     os.chdir(path_board)
     list_boards = []
@@ -37,7 +40,10 @@ def get_boards():
             list_boards.append(board)
     return list_boards
 
+
 ''' truyền data từ các file checkpoint để trả lại vị trí các checkpoint trong map'''
+
+
 def get_check_points():
     os.chdir(path_checkpoint)
     list_check_point = []
@@ -48,36 +54,60 @@ def get_check_points():
             list_check_point.append(check_point)
     return list_check_point
 
+
 ''' chuyển đổi các ký tự trong một hàng từ file TXT sang ký tự tượng trưng để hiện thị map trong game'''
+
+
 def format_row(row):
     for i in range(len(row)):
-        if row[i] == '1': #wall
-            row[i] = '#' #wall
-        elif row[i] == 'p': #dog
-            row[i] = '@' #dog
-        elif row[i] == 'b': #bone
-            row[i] = '$' #bone
-        elif row[i] == 'c': #house
-            row[i] = '%' #house
+        if row[i] == '1':  # wall
+            row[i] = '#'  # wall
+        elif row[i] == 'p':  # dog
+            row[i] = '@'  # dog
+        elif row[i] == 'b':  # bone
+            row[i] = '$'  # bone
+        elif row[i] == 'c':  # house
+            row[i] = '%'  # house
+
 
 ''' chuyển đổi ký tự checkpoint từ file txt sao chép sang một mảng '''
+
+
 def format_check_points(check_points):
     result = []
     for check_point in check_points:
         result.append((check_point[0], check_point[1]))
     return result
 
+
 ''' trả về bản đồ dưới dạng một mảng NumPy, trong đó các ký tự đã được chuyển đổi thành các ký tự thể hiện các phần tử của bản đồ.'''
+
+
 def get_board(path):
     result = np.loadtxt(f"{path}", dtype=str, delimiter=',')
     for row in result:
         format_row(row)
     return result
 
+
 '''trả về checkpoints dưới dạng một mảng NumPy, trong đó các ký tự đã được chuyển đổi thành các ký tự thể hiện các phần tử của checkpoint. '''
+
+
 def get_pair(path):
     result = np.loadtxt(f"{path}", dtype=int, delimiter=',')
     return result
+
+
+def draw_text(surface, text, position, font_size, alignment="center"):
+    font = pygame.font.Font('gameFont.ttf', font_size)
+    text_render = font.render(text, True, (0, 0, 0))
+    if alignment == "topRight":
+        text_rect = text_render.get_rect(topRight=position)
+    else:
+        text_rect = text_render.get_rect(center=position)
+
+    surface.blit(text_render, text_rect)
+
 
 '''
 //========================//
@@ -118,20 +148,19 @@ arrow_left = pygame.image.load(os.getcwd() + '\\image\\arrow_left.png')  # Tải
 arrow_right = pygame.image.load(os.getcwd() + '\\image\\arrow_right.png')  # Tải hình ảnh mũi tên phải
 init_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền khởi tạo
 loading_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền tải
-notfound_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền không tìm thấy
+notfound_background = pygame.image.load(
+    os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền không tìm thấy
 found_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền tìm thấy
 
 '''
 HIỂN THỊ BẢN ĐỒ CHO TRÒ CHƠI
 '''
+
+
 def renderMap(board):
     width = len(board[0])
     height = len(board)
     indent = (640 - width * 32) / 2.0  # Tính khoảng cách lề , với width là số lượng 
-    # font_steps = pygame.font.Font('gameFont.ttf', 20)
-    # text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
-    # text_rect_steps = text_steps.get_rect(center=(320, 400))
-    # screen.blit(text_steps, text_rect_steps)
     for i in range(height):
         for j in range(width):
             screen.blit(space, (j * 32 + indent, i * 32 + 250))  # Hiển thị không gian
@@ -143,9 +172,8 @@ def renderMap(board):
                 screen.blit(point, (j * 32 + indent, i * 32 + 250))  # Hiển thị điểm kiểm tra
             if board[i][j] == '@':
                 screen.blit(player, (j * 32 + indent, i * 32 + 250))  # Hiển thị người chơi
-    
 
-			
+
 '''
 KHỞI TẠO CÁC BIẾN
 '''
@@ -164,14 +192,15 @@ loading = False
 ''' HÀM SOKOBAN '''
 start_time = 0
 end_time = 0
-steps = 0 #để lưu số bước di chuyển
-steps1 = 0 #để lưu lại stateLength
-steps2 = steps #để lưu lại giá trị của steps
+steps = 0  # để lưu số bước di chuyển
+steps1 = 0  # để lưu lại stateLength
+steps2 = steps  # để lưu lại giá trị của steps
 initial_memory = 0
 
-## normal playing 
+
+## normal playing
 # def normal_playing(event) :
-    
+
 
 def sokoban():
     running = True
@@ -187,18 +216,23 @@ def sokoban():
     global steps
     global steps1
     global steps2
+    global board_playing
+    board_playing = None
+    count_step = 0 
+    
 
     while running:
         screen.blit(init_background, (0, 0))
         if sceneState == "init":
             initGame(maps[mapNumber])
-        
+            board_playing = maps[mapNumber]
         if sceneState == "executing":
             list_check_point = check_points[mapNumber]
             # Bắt đầu đếm thời gian
             start_time = time.time()
             if algorithm == "NORMAL":
                 sceneState = "normalplaying"
+                continue
             elif algorithm == "Euclidean Distance Heuristic":
                 result = astar1.AStar_Search1(maps[mapNumber], list_check_point)
             elif algorithm == "Manhattan Distance Heuristic":
@@ -219,6 +253,7 @@ def sokoban():
                 stateLength = len(result.list_board[0])
                 currentState = 0
                 elapsed_time = end_time - start_time
+                result.time = elapsed_time
                 print(f"  Map: Level {mapNumber + 1} ")
                 #  thời gian giải thuật
                 print(f"  Thời gian: {elapsed_time} seconds")
@@ -234,7 +269,7 @@ def sokoban():
 
         if sceneState == "end":
             if found:
-                foundGame(result,result.list_board[0][stateLength - 1], steps2)
+                foundGame(result, result.list_board[0][stateLength - 1], steps2)
             else:
                 notfoundGame()
 
@@ -242,17 +277,22 @@ def sokoban():
             clock.tick(20)
             renderMap(result.list_board[0][currentState])
             currentState = currentState + 1
-            steps +=1
-            font_steps = pygame.font.Font('gameFont.ttf', 20)
-            text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
-            text_rect_steps = text_steps.get_rect(topleft=(320, 50)) # Adjust the position as needed
-            screen.blit(text_steps, text_rect_steps)
+            steps += 1
+            draw_text(screen, 'Số bước: {}'.format(steps), (320, 50), 20, alignment='topLeft')
             if currentState == stateLength:
-        
                 steps2 = steps
                 sceneState = "end"
                 found = True
-                steps = stateLength  # Đặ số bước là chiều dài trạng thái 
+                steps = stateLength  # Đặt số bước là chiều dài trạng thái
+
+        if sceneState == "normalplaying":
+            draw_text(screen, 'Số bước: {}'.format(count_step), (320, 170), 20)
+            renderMap(board_playing)
+            if spf.check_win(board_playing,list_check_point):
+                draw_text(screen, 'Yeah! Đã tìm thấy lời giải!!!', (320, 20), 30)
+                draw_text(screen, 'Số bước: {}'.format(count_step), (320, 90), 20)
+                draw_text(screen, 'Nhấn ESC để tiếp tục', (320, 600), 20)
+            
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -288,127 +328,69 @@ def sokoban():
                                 algorithm = "Euclidean Distance Heuristic"
                 if sceneState == "normalplaying":
                     if event.type == pygame.KEYDOWN:
+                        current_pos = spf.find_position_player(board_playing)
                         if event.key == pygame.K_RIGHT:
-                            print('RIGT')
+                            board_playing = spf.move_board_by_key(board_playing, current_pos, 'RIGHT', list_check_point)
+                            count_step = count_step + 1
                         if event.key == pygame.K_LEFT:
-                            print('LEFT')
-
+                            board_playing = spf.move_board_by_key(board_playing, current_pos, 'LEFT', list_check_point)
+                            count_step = count_step + 1
+                        if event.key == pygame.K_UP:
+                            board_playing = spf.move_board_by_key(board_playing, current_pos, 'UP', list_check_point)
+                            count_step = count_step + 1
+                        if event.key == pygame.K_DOWN:
+                            board_playing = spf.move_board_by_key(board_playing, current_pos, 'DOWN', list_check_point)
+                            count_step = count_step + 1
+                        if event.key == pygame.K_ESCAPE:
+                            sceneState = "init"
 
         pygame.display.flip()
 
     pygame.quit()
 
-''' HIỂN THỊ MÀN HÌNH CHÍNH '''
+
 # HIỂN THỊ MÀN HÌNH BAN ĐẦU
 def initGame(map):
-    titleSize = pygame.font.Font('gameFont.ttf', 60)
-    titleText = titleSize.render('Corgi Brings Bones', True, WHITE)
-    titleRect = titleText.get_rect(center=(320, 80))
-    screen.blit(titleText, titleRect)
-
-    desSize = pygame.font.Font('gameFont.ttf', 20)
-    desText = desSize.render('Chọn Map:', True, WHITE)
-    desRect = desText.get_rect(center=(320, 140))
-    screen.blit(desText, desRect)
-
-    font_steps = pygame.font.Font('gameFont.ttf', 20)
-    text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
-    text_rect_steps = text_steps.get_rect(center=(320, 170)) # Use center to show view of steps
-    screen.blit(text_steps, text_rect_steps)
-
-    # font_steps = pygame.font.Font('gameFont.ttf', 20)
-    # text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
-    # text_rect_steps = text_steps.get_rect(topleft=(320, 50)) # Use topleft instead of center
-    # screen.blit(text_steps, text_rect_steps)
-
-    desSize = pygame.font.Font('gameFont.ttf', 20)
-    desText = desSize.render('Nhấn SPACE để đổi thuật toán', True, WHITE)
-    desRect = desText.get_rect(center=(320, 550))
-    screen.blit(desText, desRect)
-
-    mapSize = pygame.font.Font('gameFont.ttf', 30)
-    mapText = mapSize.render(" Map: " + str(mapNumber + 1) + " ", True, WHITE)
-    mapRect = mapText.get_rect(center=(320, 200))
-    screen.blit(mapText, mapRect)
-
+    draw_text(screen, 'Corgi Brings Bones', (320, 80), 60)
+    draw_text(screen, 'Chọn Map bằng mũi tên < >', (320, 140), 20)
+    # draw_text(screen, 'Số bước: {}'.format(steps), (320, 170), 20)
+    draw_text(screen, 'Nhấn SPACE để đổi thuật toán', (320, 550), 20)
+    draw_text(screen, " Map: " + str(mapNumber + 1) + " ", (320, 200), 30)
     screen.blit(arrow_left, (240, 188))
     screen.blit(arrow_right, (376, 188))
-
-    algorithmSize = pygame.font.Font('gameFont.ttf', 30)
-    algorithmText = algorithmSize.render(str(algorithm), True, WHITE)
-    algorithmRect = algorithmText.get_rect(center=(320, 600))
-    screen.blit(algorithmText, algorithmRect)
+    draw_text(screen, str(algorithm), (320, 600), 30)
     renderMap(map)
 
-''' CẢNH TẢI '''
+
 # HIỂN THỊ CẢNH TẢI
 def loadingGame():
     screen.blit(loading_background, (0, 0))
+    draw_text(screen, 'ĐANG TẢI', (320, 60), 40)
+    draw_text(screen, 'Đang tìm lời giải............', (320, 100), 20)
 
-    fontLoading_1 = pygame.font.Font('gameFont.ttf', 40)
-    text_1 = fontLoading_1.render('ĐANG TẢI', True, WHITE)
-    text_rect_1 = text_1.get_rect(center=(320, 60))
-    screen.blit(text_1, text_rect_1)
 
-    fontLoading_2 = pygame.font.Font('gameFont.ttf', 20)
-    text_2 = fontLoading_2.render('Đang tìm lời giải............', True, WHITE)
-    text_rect_2 = text_2.get_rect(center=(320, 100))
-    screen.blit(text_2, text_rect_2)
-
-def foundGame(result,map, steps):
+def foundGame(result, map, steps):
     global steps2
     screen.blit(found_background, (0, 0))
-
-    # font_steps = pygame.font.Font('gameFont.ttf', 20)
-    # text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
-    # text_rect_steps = text_steps.get_rect(center=(320, 300)) # Use topleft instead of center
-    # screen.blit(text_steps, text_rect_steps)
-    font_algorithmName = pygame.font.Font('gameFont.ttf', 30)
-    algorithmName_text = font_algorithmName.render('Thuật Toán : {}'.format(result.algorithmName) ,True, WHITE)
-    algorithmName_text_rect = algorithmName_text.get_rect(center=(320, 20))
-    screen.blit(algorithmName_text, algorithmName_text_rect)
-
-    font_1 = pygame.font.Font('gameFont.ttf', 30)
-    text_1 = font_1.render('Yeah! Đã tìm thấy lời giải!!!', True, WHITE)
-    text_rect_1 = text_1.get_rect(center=(320, 50))
-    screen.blit(text_1, text_rect_1)
-    
-    font_steps = pygame.font.Font('gameFont.ttf', 20)
-    text_steps = font_steps.render('Số bước: {}'.format(steps2), True, WHITE)
-    text_rect_steps = text_steps.get_rect(center=(320, 80)) # Use topleft instead of center
-    screen.blit(text_steps, text_rect_steps)
-
-    font = pygame.font.Font('gameFont.ttf', 24)
-    memory_text = font.render("Bộ nhớ: {} Mb".format(result.memory), True,WHITE)
-    memory_text_steps = memory_text.get_rect(center=(320, 120)) # Use topleft instead of center
-    screen.blit(memory_text, memory_text_steps)
-        
-    font_steps = pygame.font.Font('gameFont.ttf', 20)
-    state_text = font.render("Số trạng thái đã duyệt: {}".format(result.approved_states), True, WHITE)
-    state_text_steps = state_text.get_rect(center=(320, 200)) # Use topleft instead of center
-    screen.blit(state_text, state_text_steps)
-
-    font_2 = pygame.font.Font('gameFont.ttf', 20)
-    text_2 = font_2.render('Nhấn ENTER để tiếp tục', True, WHITE)
-    text_rect_2 = text_2.get_rect(center=(320, 600))
-    screen.blit(text_2, text_rect_2)
-
+    draw_text(screen, 'Yeah! Đã tìm thấy lời giải!!!', (320, 20), 30)
+    draw_text(screen, 'Thuật Toán : {}'.format(result.algorithmName), (320, 60), 20)
+    draw_text(screen, 'Số bước: {}'.format(steps2), (320, 90), 20)
+    draw_text(screen, "Bộ nhớ: {} Mb".format(result.memory), (320, 120), 20)
+    draw_text(screen, "Số trạng thái đã duyệt: {}".format(result.approved_states), (320, 160), 20)
+    draw_text(screen, "Thời gian : {}s".format(result.time), (320, 200), 20)
+    draw_text(screen, 'Nhấn ENTER để tiếp tục', (320, 600), 20)
     renderMap(map)
+
 
 def notfoundGame():
     screen.blit(notfound_background, (0, 0))
-    font_1 = pygame.font.Font('gameFont.ttf', 40)
-    text_1 = font_1.render('Không thể tìm ra lời giải', True, WHITE)
-    text_rect_1 = text_1.get_rect(center=(320, 100))
-    screen.blit(text_1, text_rect_1)
+    draw_text(screen, 'Không thể tìm ra lời giải', (320, 100), 40)
+    draw_text(screen, 'Nhấn ENTER để tiếp tục', (320, 600), 20)
 
-    font_2 = pygame.font.Font('gameFont.ttf', 20)
-    text_2 = font_2.render('Nhấn ENTER để tiếp tục', True, WHITE)
-    text_rect_2 = text_2.get_rect(center=(320, 600))
-    screen.blit(text_2, text_rect_2)
 
 def main():
     sokoban()
+
 
 if __name__ == "__main__":
     main()

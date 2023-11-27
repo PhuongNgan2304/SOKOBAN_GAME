@@ -22,8 +22,6 @@ class state:
         '''lưu trạng thái hiện tại và trạng thái cha của trạng thái này'''
         self.board = board
         self.state_parent = state_parent
-        self.cost = 1
-        self.heuristic = 0
         self.check_points = deepcopy(list_check_point)
     '''HÀM ĐỆ QUY ĐỂ TRUY VẾT ĐẾN TRẠNG THÁI ĐẦU TIÊN NẾU TRẠNG THÁI HIỆN TẠI LÀ MỤC TIÊU'''
     def get_line(self):
@@ -31,24 +29,7 @@ class state:
         if self.state_parent is None:
             return [self.board]
         return (self.state_parent).get_line() + [self.board]
-    '''TÍNH HÀM HEURISTIC ĐƯỢC SỬ DỤNG CHO GIẢI THUẬT A*'''
-    def compute_heuristic(self):
-        list_boxes = find_boxes_position(self.board)
-        if self.heuristic == 0:
-            self.heuristic = self.cost + abs(sum(list_boxes[i][0] + list_boxes[i][1] - self.check_points[i][0] - self.check_points[i][1] for i in range(len(list_boxes))))
-           
-        return self.heuristic
-    '''NẠP TOÁN TỬ CHO PHÉP LƯU TRẠNG THÁI TRONG HÀNG ĐỢI ƯU TIÊN'''
-    def __gt__(self, other):
-        if self.compute_heuristic() > other.compute_heuristic():
-            return True
-        else:
-            return False
-    def __lt__(self, other):
-        if self.compute_heuristic() < other.compute_heuristic():
-            return True
-        else :
-            return False
+
 
 
 def DFS_search(board, list_check_point):
@@ -62,20 +43,12 @@ def DFS_search(board, list_check_point):
    
    list_state = [start_state]
    list_visit = [start_state]
-   count = 0
    while len(list_visit) != 0:
-       count = count +1 
-       print(count)
        now_state = list_visit.pop()
-       
        cur_pos = spf.find_position_player(now_state.board)
-       
        list_can_move = spf.get_next_pos(now_state.board, cur_pos)
-       
        for next_pos in list_can_move:
-           
            new_board = spf.move(now_state.board, next_pos, cur_pos, list_check_point)
-           
            if spf.is_board_exist(new_board, list_state):
                continue
            
@@ -96,13 +69,6 @@ def DFS_search(board, list_check_point):
                 result.time = time.time()
                 result.list_board = (new_state.get_line(), len(list_state))
                 result.algorithmName = "Depth First Search"
-            #    print("\nDepth First Search")
-            #    print("Found Win")
-            #    print(" Số trạng thái đã duyệt : {} ".format(len(list_state)))
-            #    process = psutil.Process(os.getpid())
-            #    memory_usage = process.memory_info().rss / (1024**2)
-            #    print(f" Bộ nhớ: {memory_usage} Mb")
-
                 return result
            
            
@@ -123,80 +89,80 @@ def DFS_search(board, list_check_point):
    return []
 
 
-import numpy as np
+# import numpy as np
 
-class State:
-    def __init__(self, board, parent, checkpoints):
-        self.board = board
-        self.parent = parent
-        self.checkpoints = checkpoints
+# class State:
+#     def __init__(self, board, parent, checkpoints):
+#         self.board = board
+#         self.parent = parent
+#         self.checkpoints = checkpoints
 
-def check_win(board, checkpoints):
-    return np.all(board[tuple(zip(*checkpoints))] == '$')
+# def check_win(board, checkpoints):
+#     return np.all(board[tuple(zip(*checkpoints))] == '$')
 
-def find_position_player(board):
-    pos = np.where(board == '@')
-    if len(pos[0]) > 0:
-        return pos[0][0], pos[1][0]
-    return -1, -1
+# def find_position_player(board):
+#     pos = np.where(board == '@')
+#     if len(pos[0]) > 0:
+#         return pos[0][0], pos[1][0]
+#     return -1, -1
 
-def get_next_positions(current_state):
-    player_pos = find_position_player(current_state.board)
-    possible_moves = []
+# def get_next_positions(current_state):
+#     player_pos = find_position_player(current_state.board)
+#     possible_moves = []
 
-    for move in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-        next_pos = (player_pos[0] + move[0], player_pos[1] + move[1])
-        if 0 <= next_pos[0] < current_state.board.shape[0] and 0 <= next_pos[1] < current_state.board.shape[1]:
-            possible_moves.append(next_pos)
+#     for move in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+#         next_pos = (player_pos[0] + move[0], player_pos[1] + move[1])
+#         if 0 <= next_pos[0] < current_state.board.shape[0] and 0 <= next_pos[1] < current_state.board.shape[1]:
+#             possible_moves.append(next_pos)
 
-    return possible_moves
+#     return possible_moves
 
-def move(board, next_pos, player_pos, checkpoints):
-    new_board = board.copy()
-    new_player_pos = tuple(next_pos)
-    box_pos = player_pos
+# def move(board, next_pos, player_pos, checkpoints):
+#     new_board = board.copy()
+#     new_player_pos = tuple(next_pos)
+#     box_pos = player_pos
 
-    if board[next_pos] == '$':
-        box_pos = (2 * next_pos[0] - player_pos[0], 2 * next_pos[1] - player_pos[1])
+#     if board[next_pos] == '$':
+#         box_pos = (2 * next_pos[0] - player_pos[0], 2 * next_pos[1] - player_pos[1])
 
-    new_board[player_pos] = ' '
-    new_board[new_player_pos] = '@'
+#     new_board[player_pos] = ' '
+#     new_board[new_player_pos] = '@'
 
-    if board[box_pos] == '$':
-        new_board[box_pos] = ' '
-        new_board[2 * next_pos[0] - player_pos[0], 2 * next_pos[1] - player_pos[1]] = '$'
+#     if board[box_pos] == '$':
+#         new_board[box_pos] = ' '
+#         new_board[2 * next_pos[0] - player_pos[0], 2 * next_pos[1] - player_pos[1]] = '$'
 
-    return new_board
+#     return new_board
 
-def DFS_search(board, checkpoints):
-    start_state = State(board, None, checkpoints)
-    stack = [start_state]
-    visited = set()
+# def DFS_search(board, checkpoints):
+#     start_state = State(board, None, checkpoints)
+#     stack = [start_state]
+#     visited = set()
 
-    count = 0 
-    while stack:
-        count = count +1 
-        print(count)
-        current_state = stack.pop()
+#     count = 0 
+#     while stack:
+#         count = count +1 
+#         print(count)
+#         current_state = stack.pop()
 
-        if check_win(current_state.board, current_state.checkpoints):
-            return get_solution_path(current_state)
+#         if check_win(current_state.board, current_state.checkpoints):
+#             return get_solution_path(current_state)
 
-        visited.add(tuple(map(tuple, current_state.board)))
+#         visited.add(tuple(map(tuple, current_state.board)))
 
-        for next_pos in get_next_positions(current_state):
-            new_board = move(current_state.board, next_pos, find_position_player(current_state.board), current_state.checkpoints)
-            new_state = State(new_board, current_state, current_state.checkpoints)
+#         for next_pos in get_next_positions(current_state):
+#             new_board = move(current_state.board, next_pos, find_position_player(current_state.board), current_state.checkpoints)
+#             new_state = State(new_board, current_state, current_state.checkpoints)
 
-            if tuple(map(tuple, new_board)) not in visited:
-                stack.append(new_state)
-                visited.add(tuple(map(tuple, new_board)))
+#             if tuple(map(tuple, new_board)) not in visited:
+#                 stack.append(new_state)
+#                 visited.add(tuple(map(tuple, new_board)))
 
-    return []
+#     return []
 
-def get_solution_path(final_state):
-    path = [final_state.board]
-    while final_state.parent:
-        final_state = final_state.parent
-        path.insert(0, final_state.board)
-    return path
+# def get_solution_path(final_state):
+#     path = [final_state.board]
+#     while final_state.parent:
+#         final_state = final_state.parent
+#         path.insert(0, final_state.board)
+#     return path
