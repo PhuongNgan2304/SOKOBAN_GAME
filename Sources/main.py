@@ -20,10 +20,10 @@ import time
 TIME_OUT = 1800
 #!!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
 ''' lấy path của folder testcases và checkpoints '''
-#path_board = os.getcwd() + '\\..\\Testcases'
-#path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
-path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Testcases'
-path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Checkpoints'
+path_board = os.getcwd() + '\\..\\Testcases'
+path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
+# path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Testcases'
+# path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
 def get_boards():
@@ -200,18 +200,17 @@ def sokoban():
             if algorithm == "NORMAL":
                 sceneState = "normalplaying"
             elif algorithm == "Euclidean Distance Heuristic":
-                list_board = astar1.AStar_Search1(maps[mapNumber], list_check_point)
+                result = astar1.AStar_Search1(maps[mapNumber], list_check_point)
             elif algorithm == "Manhattan Distance Heuristic":
-                list_board = astar.AStar_Search(maps[mapNumber], list_check_point)
+                result = astar.AStar_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Best First Search":
-                list_board = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
+                result = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Uniform Cost Search":
-                list_board = ucs.UCS_Search(maps[mapNumber], list_check_point)
+                result = ucs.UCS_Search(maps[mapNumber], list_check_point)
             elif algorithm == "DFS":
                 result = dfs.DFS_search(maps[mapNumber], list_check_point)
             else:
-                list_board = bfs.BFS_search(maps[mapNumber], list_check_point)
-                print(list_board)
+                result = bfs.BFS_search(maps[mapNumber], list_check_point)
 
             # Dừng đếm thời gian
             end_time = time.time()
@@ -235,7 +234,7 @@ def sokoban():
 
         if sceneState == "end":
             if found:
-                foundGame(result.list_board[0][stateLength - 1], steps2)
+                foundGame(result,result.list_board[0][stateLength - 1], steps2)
             else:
                 notfoundGame()
 
@@ -249,16 +248,7 @@ def sokoban():
             text_rect_steps = text_steps.get_rect(topleft=(320, 50)) # Adjust the position as needed
             screen.blit(text_steps, text_rect_steps)
             if currentState == stateLength:
-                #!!!!!!!!
-                # Create font and text surfaces
-                font = pygame.font.Font(None, 24)
-                state_text = font.render("Số trạng thái đã duyệt: {}".format(result.approved_states), True, (255, 255, 255))
-                memory_text = font.render("Bộ nhớ: {} Mb".format(result.memory), True, (255, 255, 255))
-
-                # Blit text surfaces onto the screen
-                screen.blit(state_text, (10,10))
-                screen.blit(memory_text, (10,40))
-
+        
                 steps2 = steps
                 sceneState = "end"
                 found = True
@@ -365,7 +355,7 @@ def loadingGame():
     text_rect_2 = text_2.get_rect(center=(320, 100))
     screen.blit(text_2, text_rect_2)
 
-def foundGame(map, steps):
+def foundGame(result,map, steps):
     global steps2
     screen.blit(found_background, (0, 0))
 
@@ -373,22 +363,35 @@ def foundGame(map, steps):
     # text_steps = font_steps.render('Số bước: {}'.format(steps), True, WHITE)
     # text_rect_steps = text_steps.get_rect(center=(320, 300)) # Use topleft instead of center
     # screen.blit(text_steps, text_rect_steps)
-
-    font_steps = pygame.font.Font('gameFont.ttf', 20)
-    text_steps = font_steps.render('Số bước: {}'.format(steps2), True, WHITE)
-    text_rect_steps = text_steps.get_rect(center=(320, 200)) # Use topleft instead of center
-    screen.blit(text_steps, text_rect_steps)
+    font_algorithmName = pygame.font.Font('gameFont.ttf', 30)
+    algorithmName_text = font_algorithmName.render('Thuật Toán : {}'.format(result.algorithmName) ,True, WHITE)
+    algorithmName_text_rect = algorithmName_text.get_rect(center=(320, 20))
+    screen.blit(algorithmName_text, algorithmName_text_rect)
 
     font_1 = pygame.font.Font('gameFont.ttf', 30)
     text_1 = font_1.render('Yeah! Đã tìm thấy lời giải!!!', True, WHITE)
-    text_rect_1 = text_1.get_rect(center=(320, 100))
+    text_rect_1 = text_1.get_rect(center=(320, 50))
     screen.blit(text_1, text_rect_1)
+    
+    font_steps = pygame.font.Font('gameFont.ttf', 20)
+    text_steps = font_steps.render('Số bước: {}'.format(steps2), True, WHITE)
+    text_rect_steps = text_steps.get_rect(center=(320, 80)) # Use topleft instead of center
+    screen.blit(text_steps, text_rect_steps)
+
+    font = pygame.font.Font('gameFont.ttf', 24)
+    memory_text = font.render("Bộ nhớ: {} Mb".format(result.memory), True,WHITE)
+    memory_text_steps = memory_text.get_rect(center=(320, 120)) # Use topleft instead of center
+    screen.blit(memory_text, memory_text_steps)
+        
+    font_steps = pygame.font.Font('gameFont.ttf', 20)
+    state_text = font.render("Số trạng thái đã duyệt: {}".format(result.approved_states), True, WHITE)
+    state_text_steps = state_text.get_rect(center=(320, 200)) # Use topleft instead of center
+    screen.blit(state_text, state_text_steps)
 
     font_2 = pygame.font.Font('gameFont.ttf', 20)
     text_2 = font_2.render('Nhấn ENTER để tiếp tục', True, WHITE)
     text_rect_2 = text_2.get_rect(center=(320, 600))
     screen.blit(text_2, text_rect_2)
-
 
     renderMap(map)
 

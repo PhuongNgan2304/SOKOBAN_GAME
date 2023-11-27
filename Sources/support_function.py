@@ -11,14 +11,12 @@ TIME_OUT = 1800
 '''
 class Result:
    def __init__(self): 
-        pass 
-   
-   def __init__(self, approved_states, memory, map_level, time, list_board):
-       self.approved_states = approved_states
-       self.memory = memory
-       self.map_level = map_level
-       self.time = time
-       self.list_board = list_board
+       self.approved_states = None
+       self.memory = None
+       self.map_level = None
+       self.time = None
+       self.list_board = None
+       self.algorithmName = None
 
 '''KIỂM TRA XEM BẢNG CÓ PHẢI LÀ MỤC TIÊU HAY KHÔNG'''
 def check_win(board, list_check_point):
