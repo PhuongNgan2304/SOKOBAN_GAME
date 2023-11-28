@@ -34,22 +34,27 @@ class state:
 
 def DFS_search(board, list_check_point):
    start_time = time.time()
+   result = spf.Result()
    
    if spf.check_win(board, list_check_point):
        print("Found Win")
        return [board]
    
+   ''' KHỞI TẠO TRẠNG THÁI BẮT ĐẦU '''
    start_state = state(board, None, list_check_point)
    
-   list_state = [start_state]
-   list_visit = [start_state]
-   while len(list_visit) != 0:
-       now_state = list_visit.pop()
+   ''' KHỞI TẠO 2 DANH SÁCH ĐƯỢC SỬ DỤNG CHO TÌM KIẾM DFS '''
+   stack = [start_state]
+   visited = set()
+   
+   while stack:
+       now_state = stack.pop()
        cur_pos = spf.find_position_player(now_state.board)
        list_can_move = spf.get_next_pos(now_state.board, cur_pos)
        for next_pos in list_can_move:
            new_board = spf.move(now_state.board, next_pos, cur_pos, list_check_point)
-           if spf.is_board_exist(new_board, list_state):
+           board_tuple = tuple(map(tuple, new_board))  # convert board to tuple of tuples so it can be added to a set
+           if board_tuple in visited:
                continue
            
            if spf.is_board_can_not_win(new_board, list_check_point):
@@ -64,30 +69,28 @@ def DFS_search(board, list_check_point):
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024**2)
                 result = spf.Result()
-                result.approved_states = len(list_state)
+                result.approved_states = len(visited)
                 result.memory = memory_usage
                 result.time = time.time()
-                result.list_board = (new_state.get_line(), len(list_state))
+                result.list_board = (new_state.get_line(), len(visited))
                 result.algorithmName = "Depth First Search"
                 return result
            
-           
-           list_state.append(new_state)
-           list_visit.append(new_state)
+           visited.add(board_tuple)
+           stack.append(new_state)
            process = psutil.Process(os.getpid())
            memory_usage = process.memory_info().rss / (1024**2)
            
            end_time = time.time()
            if end_time - start_time > TIME_OUT:
-               return []
+               return result
        
        end_time = time.time()
        if end_time - start_time > TIME_OUT:
-           return []
+           return result
    
    print("Not Found")
-   return []
-
+   return result
 
 # import numpy as np
 

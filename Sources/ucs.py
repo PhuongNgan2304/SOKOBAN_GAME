@@ -41,6 +41,7 @@ class state:
 
 def UCS_Search(board, list_check_point):
     start_time = time.time()
+    result = spf.Result()
 
     if spf.check_win(board, list_check_point):
         print("Found Win")
@@ -110,14 +111,14 @@ def UCS_Search(board, list_check_point):
             '''TÍNH THỜI GIAN TIMEOUT'''
             end_time = time.time()
             if end_time - start_time > spf.TIME_OUT:
-                return []
+                return result
         
         end_time = time.time()
         if end_time - start_time > spf.TIME_OUT:
-            return []
+            return result
     
     ''' KHÔNG TÌM THẤY GIẢI PHÁP '''
     print("Not Found")
-    return []
+    return result
 
         

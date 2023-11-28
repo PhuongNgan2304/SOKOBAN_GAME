@@ -9,6 +9,7 @@ import bfs
 import astar
 import astar1
 import best_first_search
+import depth_limited_search as dls
 import ucs
 import dfs
 import time
@@ -180,7 +181,7 @@ KHỞI TẠO CÁC BIẾN
 # Mức độ bản đồ
 mapNumber = 0
 # Thuật toán giải trò chơi
-algorithm = "Euclidean Distance Heuristic"
+algorithm = "NORMAL"
 # Trạng thái cảnh, bao gồm:
 # init để chọn bản đồ và thuật toán
 # loading để hiển thị cảnh "đang tải"
@@ -241,6 +242,9 @@ def sokoban():
                 result = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Uniform Cost Search":
                 result = ucs.UCS_Search(maps[mapNumber], list_check_point)
+            elif algorithm == "DLS":
+                max_deep = 10
+                result = dls.DLS_Search(maps[mapNumber], list_check_point, max_deep)
             elif algorithm == "DFS":
                 result = dfs.DFS_search(maps[mapNumber], list_check_point)
             else:
@@ -248,15 +252,16 @@ def sokoban():
 
             # Dừng đếm thời gian
             end_time = time.time()
-            if result.list_board is not None and len(result.list_board) > 0:
-                sceneState = "playing"
-                stateLength = len(result.list_board[0])
-                currentState = 0
-                elapsed_time = end_time - start_time
-                result.time = elapsed_time
-                print(f"  Map: Level {mapNumber + 1} ")
-                #  thời gian giải thuật
-                print(f"  Thời gian: {elapsed_time} seconds")
+            if isinstance(result, spf.Result) and result.list_board is not None:
+                if result.list_board is not None and len(result.list_board) > 0:
+                    sceneState = "playing"
+                    stateLength = len(result.list_board[0])
+                    currentState = 0
+                    elapsed_time = end_time - start_time
+                    result.time = elapsed_time
+                    print(f"  Map: Level {mapNumber + 1} ")
+                    #  thời gian giải thuật
+                    print(f"  Thời gian: {elapsed_time} seconds")
             elif sceneState == "normalplaying":
                 continue
             else:
@@ -321,6 +326,8 @@ def sokoban():
                             elif algorithm == "DFS":
                                 algorithm = "Best First Search"
                             elif algorithm == "Best First Search":
+                                algorithm = "DLS"
+                            elif algorithm == "DLS":
                                 algorithm = "Uniform Cost Search"
                             elif algorithm == "Uniform Cost Search":
                                 algorithm = "NORMAL"

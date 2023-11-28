@@ -52,9 +52,7 @@ class state:
 
 def Best_First_Search(board, list_check_point):
     start_time = time.time()
-    
-    ''' GIẢI PHÁP TÌM KIẾM BEST FIRST SEARCH '''
-    
+    result = spf.Result()
     ''' NẾU BẢNG BẮT ĐẦU LÀ BẢNG KẾT THÚC HOẶC KHÔNG CÓ ĐIỂM KIỂM TRA '''
     if spf.check_win(board, list_check_point):
         print("Found Win")
@@ -127,28 +125,28 @@ def Best_First_Search(board, list_check_point):
             '''TÍNH THỜI GIAN TIMEOUT'''
             end_time = time.time()
             if end_time - start_time > spf.TIME_OUT:
-                return []
+                return result
         
         end_time = time.time()
         if end_time - start_time > spf.TIME_OUT:
-            return []
+            return result
     
     ''' KHÔNG TÌM THẤY GIẢI PHÁP '''
     print("Not Found")
-    return []
+    return result
     
-    # ''' KHỞI TẠO TRẠNG THÁI BẮT ĐẦU '''
-    # start_state = state(board, None, list_check_point)
-    # open_list = []
-    # heapq.heappush(open_list, start_state)
+# ''' KHỞI TẠO TRẠNG THÁI BẮT ĐẦU '''
+# start_state = state(board, None, list_check_point)
+# open_list = []
+# heapq.heappush(open_list, start_state)
+
+# ''' LẶP QUA HÀNG ĐỢI ƯU TIÊN '''
+# while open_list:
     
-    # ''' LẶP QUA HÀNG ĐỢI ƯU TIÊN '''
-    # while open_list:
-        
-    #     '''LẤY TRẠNG THÁI HIỆN TẠI ĐỂ TÌM KIẾM'''
-    #     now_state = heapq.heappop(open_list)
-        
-    #     '''LẤY VỊ TRÍ HIỆN TẠI CỦA NGƯỜI CHƠI'''
-    #     cur_pos = spf.find_position_player(now_state.board)
-        
-    #     '''LẤY DANH SÁCH VỊ TRÍ MÀ NGƯỜI CHƠI CÓ THỂ DI CHUYỂN'''
+#     '''LẤY TRẠNG THÁI HIỆN TẠI ĐỂ TÌM KIẾM'''
+#     now_state = heapq.heappop(open_list)
+    
+#     '''LẤY VỊ TRÍ HIỆN TẠI CỦA NGƯỜI CHƠI'''
+#     cur_pos = spf.find_position_player(now_state.board)
+    
+#     '''LẤY DANH SÁCH VỊ TRÍ MÀ NGƯỜI CHƠI CÓ THỂ DI CHUYỂN'''
