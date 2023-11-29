@@ -62,12 +62,14 @@ def BFS_search(board, list_check_point):
             new_state = state(new_board, now_state, list_check_point)
             
             if spf.check_win(new_board, list_check_point):
+                print("\nBreadth First Search")
+                print("Found Win")
+                print("  Số trạng thái đã duyệt : {} ".format(len(visited)))
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024**2)
                 result = spf.Result()
                 result.approved_states = len(visited)
                 result.memory = memory_usage
-                print(len(visited))
                 result.time = time.time()
                 result.list_board = (new_state.get_line(), len(visited))
                 result.algorithmName = "Breadth First Search"
