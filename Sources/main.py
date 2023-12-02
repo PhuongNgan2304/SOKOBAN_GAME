@@ -19,13 +19,13 @@ import support_function as spf
 # https://docs.google.com/document/d/118NqEutRUE-oxi2sj6qA7EeEyp5Fw9HK/edit#heading=h.49x2ik5
 
 ''' Timeout của mỗi map là 30 phút  '''
-TIME_OUT = 1800
+TIME_OUT = 120
 # !!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
 ''' lấy path của folder testcases và checkpoints '''
-path_board = os.getcwd() + '\\..\\Testcases'
-path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
-# path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Testcases'
-# path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_2/SOKOBAN_GAME/Checkpoints'
+#path_board = os.getcwd() + '\\..\\Testcases'
+#path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
+path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Testcases'
+path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
 
@@ -275,6 +275,7 @@ def sokoban():
         if sceneState == "end":
             if found:
                 foundGame(result, result.list_board[0][stateLength - 1], steps2)
+                steps = 0
             else:
                 notfoundGame()
 
@@ -289,6 +290,7 @@ def sokoban():
                 sceneState = "end"
                 found = True
                 steps = stateLength  # Đặt số bước là chiều dài trạng thái
+                
 
         if sceneState == "normalplaying":
             draw_text(screen, 'Số bước: {}'.format(count_step), (320, 170), 20)
