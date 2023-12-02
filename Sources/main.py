@@ -238,7 +238,7 @@ def sokoban():
                 result = astar1.AStar_Search1(maps[mapNumber], list_check_point)
             elif algorithm == "Manhattan Distance Heuristic":
                 result = astar.AStar_Search(maps[mapNumber], list_check_point)
-            elif algorithm == "Best First Search":
+            elif algorithm == " Greedy Best First Search":
                 result = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Uniform Cost Search":
                 result = ucs.UCS_Search(maps[mapNumber], list_check_point)
@@ -326,8 +326,8 @@ def sokoban():
                             elif algorithm == "BFS":
                                 algorithm = "DFS"
                             elif algorithm == "DFS":
-                                algorithm = "Best First Search"
-                            elif algorithm == "Best First Search":
+                                algorithm = " Greedy Best First Search"
+                            elif algorithm == "Greedy Best First Search":
                                 algorithm = "DLS"
                             elif algorithm == "DLS":
                                 algorithm = "Uniform Cost Search"
