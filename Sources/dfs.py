@@ -34,7 +34,7 @@ class state:
 
 def DFS_search(board, list_check_point):
    start_time = time.time()
-   result = spf.Result()
+   box_push_count = 0
    
    if spf.check_win(board, list_check_point):
        print("Found Win")
@@ -52,7 +52,9 @@ def DFS_search(board, list_check_point):
        cur_pos = spf.find_position_player(now_state.board)
        list_can_move = spf.get_next_pos(now_state.board, cur_pos)
        for next_pos in list_can_move:
-           new_board = spf.move(now_state.board, next_pos, cur_pos, list_check_point)
+           new_board, move_cost = spf.move_with_cost(now_state.board, next_pos, cur_pos, list_check_point)
+           if move_cost > 1:
+                box_push_count += 1
            board_tuple = tuple(map(tuple, new_board))  # convert board to tuple of tuples so it can be added to a set
            if board_tuple in visited:
                continue
@@ -72,6 +74,7 @@ def DFS_search(board, list_check_point):
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024**2)
                 result = spf.Result()
+                result.countFindBox = box_push_count
                 result.approved_states = len(visited)
                 result.memory = memory_usage
                 result.time = time.time()

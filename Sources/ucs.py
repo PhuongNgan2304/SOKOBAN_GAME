@@ -75,6 +75,7 @@ def UCS_Search(board, list_check_point):
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024 ** 2)
 
+                result.countFindBox = box_push_count
                 result.approved_states = len(list_state)
                 result.memory = memory_usage
                 result.time = time.time()

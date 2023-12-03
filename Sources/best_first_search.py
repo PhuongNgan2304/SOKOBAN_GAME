@@ -52,8 +52,8 @@ class state:
 
 def Best_First_Search(board, list_check_point):
     start_time = time.time()
-    result = spf.Result()
-
+    box_push_count = 0
+    
     if spf.check_win(board, list_check_point):
         print("Found Win")
         return [board]
@@ -70,7 +70,9 @@ def Best_First_Search(board, list_check_point):
         list_can_move = spf.get_next_pos(now_state.board, cur_pos)
 
         for next_pos in list_can_move:
-            new_board = spf.move(now_state.board, next_pos, cur_pos, list_check_point)
+            new_board, move_cost = spf.move_with_cost(now_state.board, next_pos, cur_pos, list_check_point)
+            if move_cost > 1:
+                box_push_count += 1
 
             if tuple(map(tuple, new_board)) in list_state:
                 continue
@@ -88,6 +90,7 @@ def Best_First_Search(board, list_check_point):
                 memory_usage = process.memory_info().rss / (1024**2)
 
                 result = spf.Result()
+                result.countFindBox = box_push_count   
                 result.approved_states = len(list_state)
                 result.memory = memory_usage
                 result.time = time.time()

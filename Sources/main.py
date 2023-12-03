@@ -4,7 +4,6 @@ from colorama import Fore
 from colorama import Style
 from copy import deepcopy
 import pygame
-from pygame.constants import KEYDOWN
 import bfs
 import astar
 import astar1
@@ -259,6 +258,7 @@ def sokoban():
                     currentState = 0
                     elapsed_time = end_time - start_time
                     result.time = elapsed_time
+                    result.map_level = mapNumber + 1
                     print(f"  Map: Level {mapNumber + 1} ")
                     #  thời gian giải thuật
                     print(f"  Thời gian: {elapsed_time} seconds")
@@ -387,7 +387,9 @@ def foundGame(result, map, steps):
     draw_text(screen, "Bộ nhớ: {} Mb".format(result.memory), (320, 120), 20)
     draw_text(screen, "Số trạng thái đã duyệt: {}".format(result.approved_states), (320, 160), 20)
     draw_text(screen, "Thời gian : {}s".format(result.time), (320, 200), 20)
+    draw_text(screen, "Số lần đẩy hộp : {}".format(result.countFindBox), (320, 230), 20)
     draw_text(screen, 'Nhấn ENTER để tiếp tục', (320, 600), 20)
+    spf.export_result_to_csv(result,mapNumber+1)
     renderMap(map)
 
 

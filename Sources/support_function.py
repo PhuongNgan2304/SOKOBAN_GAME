@@ -1,5 +1,7 @@
 from copy import deepcopy
 import math
+import csv
+import os
 
 TIME_OUT = 1800
 
@@ -342,3 +344,60 @@ def move_board_by_key(board, cur_pos, key, list_check_point):
         return new_board
 
     return board  # Trả về bảng hiện tại nếu nước đi không hợp lệ
+
+def export_result_to_csv(result, map_name, csv_folder="thongke"):
+    # Tạo thư mục nếu nó chưa tồn tại
+    if not os.path.exists(csv_folder):
+        os.makedirs(csv_folder)
+
+    csv_file_path = os.path.join(csv_folder, f"{map_name}_thongke.csv")
+
+    # Write the header if the file is newly created
+    if not os.path.isfile(csv_file_path):
+        with open(csv_file_path, 'w', newline='') as csvfile:
+            fieldnames = ['Algorithm', 'Approved States', 'Memory (MB)', 'Map Level', 'Time (s)', 'Board Count', 'Count Push Box']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+
+    # Read existing rows from the CSV file to check for existing algorithm name
+    existing_rows = []
+    if os.path.isfile(csv_file_path):
+        with open(csv_file_path, 'r', newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            existing_rows = list(reader)
+
+    # Check if the algorithm name already exists in the CSV file
+    algorithm_exists = any(row[0] == result.algorithmName for row in existing_rows)
+
+    # If the algorithm name already exists, find its index
+    if algorithm_exists:
+        index = next(i for i, row in enumerate(existing_rows) if row[0] == result.algorithmName)
+
+        # Replace the existing row with the new result
+        existing_rows[index] = [
+            result.algorithmName,
+            result.approved_states,
+            result.memory,
+            result.map_level,
+            result.time,
+            result.list_board[1],  # Assuming list_board is a tuple with the board count
+            result.countFindBox
+        ]
+    else:
+        # Append a new row for the new algorithm
+        existing_rows.append([
+            result.algorithmName,
+            result.approved_states,
+            result.memory,
+            result.map_level,
+            result.time,
+            result.list_board[1],  # Assuming list_board is a tuple with the board count
+            result.countFindBox
+        ])
+
+    # Write all rows (either modified or new) back to the CSV file
+    with open(csv_file_path, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(existing_rows)
+    
+        

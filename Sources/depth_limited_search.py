@@ -29,7 +29,7 @@ class state:
 
 def DLS_Search(board, list_check_point, max_depth):
     start_time = time.time()
-    result = spf.Result()
+    box_push_count = 0
     
     if spf.check_win(board, list_check_point):
         print("Found Win")
@@ -51,7 +51,9 @@ def DLS_Search(board, list_check_point, max_depth):
 
         ''' TẠO TRẠNG THÁI MỚI TỪ DANH SÁCH CÓ THỂ DI CHUYỂN '''
         for next_pos in list_can_move:
-            new_board = spf.move(current_state.board, next_pos, cur_pos, list_check_point)
+            new_board, move_cost = spf.move_with_cost(current_state.board, next_pos, cur_pos, list_check_point)
+            if move_cost > 1:
+                box_push_count += 1
             board_tuple = tuple(map(tuple, new_board))
 
             if board_tuple in visited or depth >= max_depth:
@@ -72,6 +74,8 @@ def DLS_Search(board, list_check_point, max_depth):
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024 ** 2)
 
+                result = spf.Result()
+                result.countFindBox = box_push_count
                 result.approved_states = len(visited)
                 result.memory = memory_usage
                 result.time = time.time()
