@@ -28,16 +28,11 @@ class state:
         return (self.state_parent).get_line() + [self.board]
     
     def __gt__(self, other):
-        if self.cost > other.cost:
-            return True
-        else:
-            return False
-
+        return self.cost > other.cost
+        
     def __lt__(self, other):
-        if self.cost < other.cost:
-            return True
-        else:
-            return False
+        return self.cost < other.cost
+        
 
 def UCS_Search(board, list_check_point):
     start_time = time.time()
