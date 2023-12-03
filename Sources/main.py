@@ -238,7 +238,7 @@ def sokoban():
                 result = astar1.AStar_Search1(maps[mapNumber], list_check_point)
             elif algorithm == "Manhattan Distance Heuristic":
                 result = astar.AStar_Search(maps[mapNumber], list_check_point)
-            elif algorithm == " Greedy Best First Search":
+            elif algorithm == "Greedy Best First Search":
                 result = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Uniform Cost Search":
                 result = ucs.UCS_Search(maps[mapNumber], list_check_point)

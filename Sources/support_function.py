@@ -17,6 +17,7 @@ class Result:
         self.map_level = None
         self.time = None
         self.list_board = None
+        self.countFindBox = 0
         self.algorithmName = None
 
 
@@ -240,6 +241,29 @@ def move(board, next_pos, cur_pos, list_check_point):
         if new_board[p[0]][p[1]] == ' ':
             new_board[p[0]][p[1]] = '%'
     return new_board
+
+def move_with_cost(board, next_pos, cur_pos, list_check_point):
+    '''trả về một bảng mới sau khi di chuyển'''
+    # TẠO BẢNG MỚI NHƯ BẢNG HIỆN TẠI
+    new_board = assign_matrix(board)
+    # TẠO BIẾN COST
+    new_cost = 0
+    # TÌM VỊ TRÍ TIẾP THEO NẾU DI CHUYỂN ĐẾN HỘP
+    if new_board[next_pos[0]][next_pos[1]] == '$':
+        x = 2 * next_pos[0] - cur_pos[0]
+        y = 2 * next_pos[1] - cur_pos[1]
+        new_board[x][y] = '$'
+        new_cost += 2  # Di chuyển kèm theo hộp, cost + 2
+    # DI CHUYỂN NGƯỜI CHƠI ĐẾN VỊ TRÍ MỚI
+    new_board[next_pos[0]][next_pos[1]] = '@'
+    new_board[cur_pos[0]][cur_pos[1]] = ' '
+    # KIỂM TRA NẾU TẠI VỊ TRÍ ĐIỂM KIỂM TRA KHÔNG CÓ HỘP HAY NHÂN VẬT THÌ CẬP NHẬT % NHƯ CŨ
+    for p in list_check_point:
+        if new_board[p[0]][p[1]] == ' ':
+            new_board[p[0]][p[1]] = '%'
+    new_cost += 1
+    return new_board ,new_cost
+
 
 
 '''TÌM DANH SÁCH CÁC ĐIỂM KIỂM TRA TRÊN BẢNG'''
