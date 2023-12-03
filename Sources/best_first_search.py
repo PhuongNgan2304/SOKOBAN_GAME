@@ -101,7 +101,7 @@ def Best_First_Search(board, list_check_point):
             
             '''KIỂM TRA XEM TRẠNG THÁI MỚI CÓ PHẢI LÀ TRẠNG THÁI KẾT THÚC KHÔNG'''
             if spf.check_win(new_board, list_check_point):
-                print("\nBest First Search")
+                print("\nGreedy Best First Search")
                 print("Found Win")
                 print("  Số trạng thái đã duyệt : {} ".format(len(list_state)))
                 process = psutil.Process(os.getpid())
@@ -112,7 +112,7 @@ def Best_First_Search(board, list_check_point):
                 result.memory = memory_usage
                 result.time = time.time()
                 result.list_board = (new_state.get_line(), len(list_state))
-                result.algorithmName = "Best First Search"
+                result.algorithmName = "Greedy Best First Search"
                 
                 return result
             
