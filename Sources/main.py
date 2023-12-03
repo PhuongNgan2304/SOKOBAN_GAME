@@ -243,7 +243,7 @@ def sokoban():
             elif algorithm == "Uniform Cost Search":
                 result = ucs.UCS_Search(maps[mapNumber], list_check_point)
             elif algorithm == "DLS":
-                max_deep = 10
+                max_deep = 300
                 result = dls.DLS_Search(maps[mapNumber], list_check_point, max_deep)
             elif algorithm == "DFS":
                 result = dfs.DFS_search(maps[mapNumber], list_check_point)
