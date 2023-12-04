@@ -280,7 +280,7 @@ def sokoban():
                 notfoundGame()
 
         if sceneState == "playing":
-            clock.tick(20)
+            clock.tick(200)
             renderMap(result.list_board[0][currentState])
             currentState = currentState + 1
             steps += 1
@@ -389,6 +389,7 @@ def foundGame(result, map, steps):
     draw_text(screen, "Thời gian : {}s".format(result.time), (320, 200), 20)
     draw_text(screen, "Số lần đẩy hộp : {}".format(result.countFindBox), (320, 230), 20)
     draw_text(screen, 'Nhấn ENTER để tiếp tục', (320, 600), 20)
+    result.countMove = steps2
     spf.export_result_to_csv(result,mapNumber+1)
     renderMap(map)
 

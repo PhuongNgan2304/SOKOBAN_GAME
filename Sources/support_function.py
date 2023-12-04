@@ -21,6 +21,7 @@ class Result:
         self.list_board = None
         self.countFindBox = 0
         self.algorithmName = None
+        self.countMove = 0 
 
 
 '''KIỂM TRA XEM BẢNG CÓ PHẢI LÀ MỤC TIÊU HAY KHÔNG'''
@@ -355,7 +356,7 @@ def export_result_to_csv(result, map_name, csv_folder="thongke"):
     # Write the header if the file is newly created
     if not os.path.isfile(csv_file_path):
         with open(csv_file_path, 'w', newline='') as csvfile:
-            fieldnames = ['Algorithm', 'Approved States', 'Memory (MB)', 'Map Level', 'Time (s)', 'Board Count', 'Count Push Box']
+            fieldnames = ['Algorithm', 'Approved States', 'Memory (MB)', 'Map Level', 'Time (s)', 'Count Push Box', 'Count Move']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
 
@@ -371,18 +372,19 @@ def export_result_to_csv(result, map_name, csv_folder="thongke"):
 
     # If the algorithm name already exists, find its index
     if algorithm_exists:
-        index = next(i for i, row in enumerate(existing_rows) if row[0] == result.algorithmName)
+        index = next((i for i, row in enumerate(existing_rows) if row[0] == result.algorithmName), None)
 
         # Replace the existing row with the new result
-        existing_rows[index] = [
-            result.algorithmName,
-            result.approved_states,
-            result.memory,
-            result.map_level,
-            result.time,
-            result.list_board[1],  # Assuming list_board is a tuple with the board count
-            result.countFindBox
-        ]
+        if index is not None:
+            existing_rows[index] = [
+                result.algorithmName,
+                result.approved_states,
+                result.memory,
+                result.map_level,
+                result.time,
+                result.countFindBox,
+                result.countMove
+            ]
     else:
         # Append a new row for the new algorithm
         existing_rows.append([
@@ -391,13 +393,11 @@ def export_result_to_csv(result, map_name, csv_folder="thongke"):
             result.memory,
             result.map_level,
             result.time,
-            result.list_board[1],  # Assuming list_board is a tuple with the board count
-            result.countFindBox
+            result.countFindBox,
+            result.countMove
         ])
 
     # Write all rows (either modified or new) back to the CSV file
     with open(csv_file_path, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(existing_rows)
-    
-        

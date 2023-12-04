@@ -1,0 +1,3 @@
+Algorithm,Approved States,Memory (MB),Map Level,Time (s),Count Push Box,Count Move
+Euclidean Distance Heuristic,1644,66.04296875,11,0.8760061264038086,215,145
+Manhattan Distance Heuristic,2446,67.33984375,11,0.4927225112915039,332,137
