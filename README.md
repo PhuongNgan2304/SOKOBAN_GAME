@@ -4,9 +4,6 @@
 - 20161347 Nguyễn Bùi Minh Nhật
 
 
-
-
-
 ## Làm xong push lên với step sau
 
 kiểm tra tình trạng git với :
@@ -44,3 +41,19 @@ Cách tạo virtual trên python
 - Muốn thoát sử dụng `deactivate`
 - Lệnh tải các gói cần cài đặt từ file requirements.txt `pip install -r requirements.txt`
 - Lệnh liệt kê gói cần cài đặt `pip freeze > requirements.txt`
+
+## How to run this project
+Hướng dẫn chạy ở [README.txt](README.txt) file
+
+## Project overview
+
+Giao diện khởi tạo trò chơi
+
+Giao diện khi loading trò chơi
+
+Giao diện không tìm thấy lời giải
+
+Giao diện bắt đầu trò chơi
+
+Giao diện khi tìm được kết quả
+
