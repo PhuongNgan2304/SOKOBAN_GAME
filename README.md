@@ -4,9 +4,6 @@
 - 20161347 Nguyễn Bùi Minh Nhật
 
 
-
-
-
 ## Làm xong push lên với step sau
 
 kiểm tra tình trạng git với :
