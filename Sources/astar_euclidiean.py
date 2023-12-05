@@ -1,24 +1,23 @@
-#import heapq
 import support_function as spf
-from copy import deepcopy
 import time
 from queue import PriorityQueue
 import psutil
 import os
+from copy import deepcopy
 import math
 
 '''
-//=========================================//
-//     GIẢI THUẬT BEST FIRST SEARCH*      //
-//            IMPLEMENTATION             //
-//======================================//
+//========================//
+//     GIẢI THUẬT A*      //
+//    IMPLEMENTATION     //
+//========================//
 '''
-
 class state:
     def __init__(self, board, state_parent, list_check_point):
         self.board = board
         self.state_parent = state_parent
-        self.heuristic = 0 #h(n), không cộng g(n)
+        self.cost = 1 #g(N)
+        self.heuristic = 0 #h(n)
         self.check_points = deepcopy(list_check_point)
     
     def get_line(self):
@@ -26,7 +25,7 @@ class state:
             return [self.board]
         return (self.state_parent).get_line() + [self.board]
 
-    def compute_euclidean_heuristic_for_best_first_search(self):
+    def compute_euclidean_heuristic(self):
         list_boxes = spf.find_boxes_position(self.board)
         if self.heuristic == 0:
             total_distance = 0
@@ -35,32 +34,32 @@ class state:
                 checkpoint = self.check_points[i]
                 distance = math.sqrt((box[0] - checkpoint[0])**2 + (box[1] - checkpoint[1])**2)
                 total_distance += distance
-            self.heuristic = total_distance
+            self.heuristic = self.cost + total_distance
         return self.heuristic
 
     def __gt__(self, other):
-        if self.compute_euclidean_heuristic_for_best_first_search() > other.compute_euclidean_heuristic_for_best_first_search():
+        if self.compute_euclidean_heuristic() > other.compute_euclidean_heuristic():
             return True
         else:
             return False
 
     def __lt__(self, other):
-        if self.compute_euclidean_heuristic_for_best_first_search() < other.compute_euclidean_heuristic_for_best_first_search():
+        if self.compute_euclidean_heuristic() < other.compute_euclidean_heuristic():
             return True
         else:
             return False
 
-def Best_First_Search(board, list_check_point):
+def Astar_euclidiean_Search(board, list_check_point):
     start_time = time.time()
+    result = spf.Result()
     box_push_count = 0
-    
     if spf.check_win(board, list_check_point):
         print("Found Win")
         return [board]
 
     start_state = state(board, None, list_check_point)
     list_state = {tuple(map(tuple, board))}
-
+    
     heuristic_queue = PriorityQueue()
     heuristic_queue.put(start_state)
 
@@ -83,19 +82,19 @@ def Best_First_Search(board, list_check_point):
             new_state = state(new_board, now_state, list_check_point)
 
             if spf.check_win(new_board, list_check_point):
-                print("\nGreedy Best First Search")
+                print("\nA*(Euclidean) Search")
                 print("Found Win")
                 print("  Số trạng thái đã duyệt : {} ".format(len(list_state)))
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024**2)
 
-                result = spf.Result()
-                result.countFindBox = box_push_count   
+                result = spf.Result() 
+                result.countFindBox = box_push_count
                 result.approved_states = len(list_state)
                 result.memory = memory_usage
                 result.time = time.time()
                 result.list_board = (new_state.get_line(), len(list_state))
-                result.algorithmName = "Greedy Best First Search"
+                result.algorithmName = "A*(Euclidean) Search"
 
                 return result
 
@@ -108,10 +107,6 @@ def Best_First_Search(board, list_check_point):
             end_time = time.time()
             if end_time - start_time > spf.TIME_OUT:
                 return result
-
-        end_time = time.time()
-        if end_time - start_time > spf.TIME_OUT:
-            return result
 
     print("Not Found")
     return result

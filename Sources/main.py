@@ -5,9 +5,9 @@ from colorama import Style
 from copy import deepcopy
 import pygame
 import bfs
-import astar
-import astar1
-import best_first_search
+import astar_manhattan
+import astar_euclidiean
+import greedy_best_first_search as gbfs
 import depth_limited_search as dls
 import ucs
 import dfs
@@ -242,12 +242,12 @@ def sokoban():
             if algorithm == "NORMAL":
                 sceneState = "normalplaying"
                 continue
-            elif algorithm == "Euclidean Distance Heuristic":
-                result = astar1.AStar_Search1(maps[mapNumber], list_check_point)
-            elif algorithm == "Manhattan Distance Heuristic":
-                result = astar.AStar_Search(maps[mapNumber], list_check_point)
+            elif algorithm == "A*(Euclidean)":
+                result = astar_euclidiean.Astar_euclidiean_Search(maps[mapNumber], list_check_point)
+            elif algorithm == "A*(Manhattan)":
+                result = astar_manhattan.AStar_manhattan_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Greedy Best First Search":
-                result = best_first_search.Best_First_Search(maps[mapNumber], list_check_point)
+                result = gbfs.Best_First_Search(maps[mapNumber], list_check_point)
             elif algorithm == "Uniform Cost Search":
                 result = ucs.UCS_Search(maps[mapNumber], list_check_point)
             elif algorithm == "DLS":
@@ -328,9 +328,9 @@ def sokoban():
                             if mapNumber > 0:
                                 mapNumber = mapNumber - 1
                         if event.key == pygame.K_SPACE:
-                            if algorithm == "Euclidean Distance Heuristic":
-                                algorithm = "Manhattan Distance Heuristic"
-                            elif algorithm == "Manhattan Distance Heuristic":
+                            if algorithm == "A*(Euclidean)":
+                                algorithm = "A*(Manhattan)"
+                            elif algorithm == "A*(Manhattan)":
                                 algorithm = "BFS"
                             elif algorithm == "BFS":
                                 algorithm = "DFS"
@@ -343,7 +343,7 @@ def sokoban():
                             elif algorithm == "Uniform Cost Search":
                                 algorithm = "NORMAL"
                             else:
-                                algorithm = "Euclidean Distance Heuristic"
+                                algorithm = "A*(Euclidean)"
                 if sceneState == "normalplaying":
                     if event.type == pygame.KEYDOWN:
                         current_pos = spf.find_position_player(board_playing)

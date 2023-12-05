@@ -1,55 +1,65 @@
+#import heapq
 import support_function as spf
+from copy import deepcopy
 import time
 from queue import PriorityQueue
 import psutil
 import os
-from copy import deepcopy
-
-#CHECK LẠI SAU CHO CHẮC
+import math
 
 '''
-//========================//
-//     GIẢI THUẬT A*      //
-//    IMPLEMENTATION     //
-//========================//
+//=========================================//
+//     GIẢI THUẬT GREEDY BEST FIRST SEARCH*      //
+//            IMPLEMENTATION             //
+//======================================//
 '''
 
-class State:
+class state:
     def __init__(self, board, state_parent, list_check_point):
         self.board = board
         self.state_parent = state_parent
-        self.cost = 1
-        self.heuristic = 0
+        self.heuristic = 0 #h(n), không cộng g(n)
         self.check_points = deepcopy(list_check_point)
-
-    def compute_heuristic(self):
-        if self.heuristic == 0:
-            list_boxes = spf.find_boxes_position(self.board)
-            self.heuristic = self.cost + abs(sum(list_boxes[i][0] + list_boxes[i][1] - self.check_points[i][0] - self.check_points[i][1] for i in range(len(list_boxes))))
-        return self.heuristic
-
+    
     def get_line(self):
         if self.state_parent is None:
             return [self.board]
-        return self.state_parent.get_line() + [self.board]
+        return (self.state_parent).get_line() + [self.board]
+
+    def compute_euclidean_heuristic_for_best_first_search(self):
+        list_boxes = spf.find_boxes_position(self.board)
+        if self.heuristic == 0:
+            total_distance = 0
+            for i in range(len(list_boxes)):
+                box = list_boxes[i]
+                checkpoint = self.check_points[i]
+                distance = math.sqrt((box[0] - checkpoint[0])**2 + (box[1] - checkpoint[1])**2)
+                total_distance += distance
+            self.heuristic = total_distance
+        return self.heuristic
 
     def __gt__(self, other):
-        return self.compute_heuristic() > other.compute_heuristic()
+        if self.compute_euclidean_heuristic_for_best_first_search() > other.compute_euclidean_heuristic_for_best_first_search():
+            return True
+        else:
+            return False
 
     def __lt__(self, other):
-        return self.compute_heuristic() < other.compute_heuristic()
+        if self.compute_euclidean_heuristic_for_best_first_search() < other.compute_euclidean_heuristic_for_best_first_search():
+            return True
+        else:
+            return False
 
-def AStar_Search(board, list_check_point):
+def Best_First_Search(board, list_check_point):
     start_time = time.time()
-    result = spf.Result()
     box_push_count = 0
-
+    
     if spf.check_win(board, list_check_point):
         print("Found Win")
         return [board]
 
-    start_state = State(board, None, list_check_point)
-    list_state = set()
+    start_state = state(board, None, list_check_point)
+    list_state = {tuple(map(tuple, board))}
 
     heuristic_queue = PriorityQueue()
     heuristic_queue.put(start_state)
@@ -63,39 +73,45 @@ def AStar_Search(board, list_check_point):
             new_board, move_cost = spf.move_with_cost(now_state.board, next_pos, cur_pos, list_check_point)
             if move_cost > 1:
                 box_push_count += 1
-            board_tuple = tuple(map(tuple, new_board))
 
-            if board_tuple in list_state:
+            if tuple(map(tuple, new_board)) in list_state:
                 continue
 
             if spf.is_board_can_not_win(new_board, list_check_point) or spf.is_all_boxes_stuck(new_board, list_check_point):
                 continue
 
-            new_state = State(new_board, now_state, list_check_point)
+            new_state = state(new_board, now_state, list_check_point)
 
             if spf.check_win(new_board, list_check_point):
-                print("\nManhattan Distance Heuristic")
+                print("\nGreedy Best First Search")
                 print("Found Win")
                 print("  Số trạng thái đã duyệt : {} ".format(len(list_state)))
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024**2)
 
                 result = spf.Result()
-                result.countFindBox = box_push_count
+                result.countFindBox = box_push_count   
                 result.approved_states = len(list_state)
                 result.memory = memory_usage
                 result.time = time.time()
                 result.list_board = (new_state.get_line(), len(list_state))
-                result.algorithmName = "Manhattan Distance Heuristic"
+                result.algorithmName = "Greedy Best First Search"
 
                 return result
 
-            list_state.add(board_tuple)
+            list_state.add(tuple(map(tuple, new_board)))
             heuristic_queue.put(new_state)
+
+            process = psutil.Process(os.getpid())
+            memory_usage = process.memory_info().rss / (1024**2)
 
             end_time = time.time()
             if end_time - start_time > spf.TIME_OUT:
                 return result
+
+        end_time = time.time()
+        if end_time - start_time > spf.TIME_OUT:
+            return result
 
     print("Not Found")
     return result
