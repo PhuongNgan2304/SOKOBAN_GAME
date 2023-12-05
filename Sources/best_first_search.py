@@ -115,19 +115,3 @@ def Best_First_Search(board, list_check_point):
 
     print("Not Found")
     return result
-
-# ''' KHỞI TẠO TRẠNG THÁI BẮT ĐẦU '''
-# start_state = state(board, None, list_check_point)
-# open_list = []
-# heapq.heappush(open_list, start_state)
-
-# ''' LẶP QUA HÀNG ĐỢI ƯU TIÊN '''
-# while open_list:
-    
-#     '''LẤY TRẠNG THÁI HIỆN TẠI ĐỂ TÌM KIẾM'''
-#     now_state = heapq.heappop(open_list)
-    
-#     '''LẤY VỊ TRÍ HIỆN TẠI CỦA NGƯỜI CHƠI'''
-#     cur_pos = spf.find_position_player(now_state.board)
-    
-#     '''LẤY DANH SÁCH VỊ TRÍ MÀ NGƯỜI CHƠI CÓ THỂ DI CHUYỂN'''

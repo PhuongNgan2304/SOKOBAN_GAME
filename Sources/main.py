@@ -98,11 +98,14 @@ def get_pair(path):
     return result
 
 
-def draw_text(surface, text, position, font_size, alignment="center"):
+def draw_text(surface, text, position, font_size, alignment="topRight"):
+    # Di chuyển vị trí sang bên phải 150px
+    position = (position[0] + 250, position[1])
     font = pygame.font.Font('gameFont.ttf', font_size)
     text_render = font.render(text, True, (0, 0, 0))
+    
     if alignment == "topRight":
-        text_rect = text_render.get_rect(topRight=position)
+        text_rect = text_render.get_rect(topleft=position)
     else:
         text_rect = text_render.get_rect(center=position)
 
@@ -128,51 +131,57 @@ check_points = get_check_points()  # Lấy điểm kiểm tra
 '''
 pygame.init()  # Khởi tạo Pygame
 pygame.font.init()  # Khởi tạo font Pygame
-screen = pygame.display.set_mode((640, 640))  # Khởi tạo màn hình với kích thước 640x640
+WIDTH_SCREEN = 1024
+HEIGTH_SCREEN = 640
+screen = pygame.display.set_mode((WIDTH_SCREEN, HEIGTH_SCREEN))  # Khởi tạo màn hình với kích thước 640x640
 pygame.display.set_caption('Corgi Sokoban')  # Đặt tiêu đề cửa sổ là 'Sokoban'
 clock = pygame.time.Clock()  # Tạo một đồng hồ
-BACKGROUND = (0, 0, 0)  # Màu nền đen
-WHITE = (0, 0, 0)  # Màu trắng bị đổi sang đen
 
 '''
 LẤY CÁC TÀI SẢN
 '''
 assets_path = os.getcwd() + "\\..\\Assets"  # Đường dẫn đến thư mục chứa tài sản
 os.chdir(assets_path)  # Thay đổi thư mục làm việc hiện tại thành thư mục tài sản
-player = pygame.image.load(os.getcwd() + '\\image\\corgi_new.png')  # Tải hình ảnh người chơi
-wall = pygame.image.load(os.getcwd() + '\\image\\wall_new.png')  # Tải hình ảnh tường
-box = pygame.image.load(os.getcwd() + '\\image\\bone_new2.png')  # Tải hình ảnh hộp
-point = pygame.image.load(os.getcwd() + '\\image\\house_new2.png')  # Tải hình ảnh điểm kiểm tra
-space = pygame.image.load(os.getcwd() + '\\image\\grass_new.jpg')  # Tải hình ảnh không gian
+player = pygame.image.load(os.getcwd() + '\\new\\dog.png')  # Tải hình ảnh người chơi
+wall = pygame.image.load(os.getcwd() + '\\new\\wall.png')  # Tải hình ảnh tường
+box = pygame.image.load(os.getcwd() + '\\new\\bone.png')  # Tải hình ảnh hộp
+point = pygame.image.load(os.getcwd() + '\\new\\house.png')  # Tải hình ảnh điểm kiểm tra
+space = pygame.image.load(os.getcwd() + '\\new\\grass.png')  # Tải hình ảnh không gian
 arrow_left = pygame.image.load(os.getcwd() + '\\image\\arrow_left.png')  # Tải hình ảnh mũi tên trái
 arrow_right = pygame.image.load(os.getcwd() + '\\image\\arrow_right.png')  # Tải hình ảnh mũi tên phải
 init_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền khởi tạo
 loading_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền tải
-notfound_background = pygame.image.load(
-    os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền không tìm thấy
+dashboard_background = pygame.image.load(os.getcwd() + '\\new\\dashboard.png')  # Tải hình ảnh nền tải
+notfound_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền không tìm thấy
 found_background = pygame.image.load(os.getcwd() + '\\image\\background_grass.jpg')  # Tải hình ảnh nền tìm thấy
 
 '''
 HIỂN THỊ BẢN ĐỒ CHO TRÒ CHƠI
 '''
+def renderDashboard(board):
+    background_width = dashboard_background.get_width()
+    x_position = WIDTH_SCREEN - background_width
+    screen.blit(dashboard_background, (x_position, 0))
 
 
 def renderMap(board):
+    cell_size = 50
     width = len(board[0])
     height = len(board)
-    indent = (640 - width * 32) / 2.0  # Tính khoảng cách lề , với width là số lượng 
+    indent = (WIDTH_SCREEN - width * cell_size) / 2.0  # Tính khoảng cách lề , với width là số lượng 
     for i in range(height):
         for j in range(width):
-            screen.blit(space, (j * 32 + indent, i * 32 + 250))  # Hiển thị không gian
+            screen.blit(space, (j * cell_size + indent - 230, i * cell_size + 100))  # Hiển thị không gian
             if board[i][j] == '#':
-                screen.blit(wall, (j * 32 + indent, i * 32 + 250))  # Hiển thị tường
+                screen.blit(wall, (j * cell_size + indent - 230, i * cell_size + 100))  # Hiển thị tường
             if board[i][j] == '$':
-                screen.blit(box, (j * 32 + indent, i * 32 + 250))  # Hiển thị hộp
+                screen.blit(box, (j * cell_size + indent - 230, i * cell_size + 100))  # Hiển thị hộp
             if board[i][j] == '%':
-                screen.blit(point, (j * 32 + indent, i * 32 + 250))  # Hiển thị điểm kiểm tra
+                screen.blit(point, (j * cell_size + indent - 230, i * cell_size + 100))  # Hiển thị điểm kiểm tra
             if board[i][j] == '@':
-                screen.blit(player, (j * 32 + indent, i * 32 + 250))  # Hiển thị người chơi
+                screen.blit(player, (j * cell_size + indent - 230, i * cell_size + 100))  # Hiển thị người chơi
 
+    
 
 '''
 KHỞI TẠO CÁC BIẾN
@@ -269,7 +278,7 @@ def sokoban():
                 found = False
 
         if sceneState == "loading":
-            loadingGame()
+            loadingGame(maps[mapNumber])
             sceneState = "executing"
 
         if sceneState == "end":
@@ -277,10 +286,10 @@ def sokoban():
                 foundGame(result, result.list_board[0][stateLength - 1], steps2)
                 steps = 0
             else:
-                notfoundGame()
+                notfoundGame(maps[mapNumber])
 
         if sceneState == "playing":
-            clock.tick(200)
+            clock.tick(20)
             renderMap(result.list_board[0][currentState])
             currentState = currentState + 1
             steps += 1
@@ -360,42 +369,45 @@ def sokoban():
 
 # HIỂN THỊ MÀN HÌNH BAN ĐẦU
 def initGame(map):
-    draw_text(screen, 'Corgi Brings Bones', (320, 80), 60)
+    renderDashboard(map)
+    draw_text(screen, 'Corgi Brings Bones', (320, 80), 40)
     draw_text(screen, 'Chọn Map bằng mũi tên < >', (320, 140), 20)
-    # draw_text(screen, 'Số bước: {}'.format(steps), (320, 170), 20)
-    draw_text(screen, 'Nhấn SPACE để đổi thuật toán', (320, 550), 20)
-    draw_text(screen, " Map: " + str(mapNumber + 1) + " ", (320, 200), 30)
-    screen.blit(arrow_left, (240, 188))
-    screen.blit(arrow_right, (376, 188))
-    draw_text(screen, str(algorithm), (320, 600), 30)
+    draw_text(screen, "Map: " + str(mapNumber + 1) + " ", (320, 170), 20)
+    draw_text(screen, str(algorithm), (320, 230), 30)
+    draw_text(screen, 'Nhấn SPACE để đổi thuật toán', (320, 300), 20)
+    # screen.blit(arrow_left, (240, 188))
+    # screen.blit(arrow_right, (376, 188))
     renderMap(map)
 
 
 # HIỂN THỊ CẢNH TẢI
-def loadingGame():
+def loadingGame(map):
     screen.blit(loading_background, (0, 0))
+    renderDashboard(map)
     draw_text(screen, 'ĐANG TẢI', (320, 60), 40)
-    draw_text(screen, 'Đang tìm lời giải............', (320, 100), 20)
+    draw_text(screen, 'Đang tìm lời giải............', (320, 120), 20)
 
 
 def foundGame(result, map, steps):
     global steps2
     screen.blit(found_background, (0, 0))
+    renderDashboard(map)
     draw_text(screen, 'Yeah! Đã tìm thấy lời giải!!!', (320, 20), 30)
-    draw_text(screen, 'Thuật Toán : {}'.format(result.algorithmName), (320, 60), 20)
-    draw_text(screen, 'Số bước: {}'.format(steps2), (320, 90), 20)
-    draw_text(screen, "Bộ nhớ: {} Mb".format(result.memory), (320, 120), 20)
-    draw_text(screen, "Số trạng thái đã duyệt: {}".format(result.approved_states), (320, 160), 20)
+    draw_text(screen, 'Thuật Toán : {}'.format(result.algorithmName), (320, 80), 20)
+    draw_text(screen, 'Số bước: {}'.format(steps2), (320, 110), 20)
+    draw_text(screen, "Bộ nhớ: {} Mb".format(result.memory), (320, 140), 20)
+    draw_text(screen, "Số trạng thái đã duyệt: {}".format(result.approved_states), (320, 170), 20)
     draw_text(screen, "Thời gian : {}s".format(result.time), (320, 200), 20)
     draw_text(screen, "Số lần đẩy hộp : {}".format(result.countFindBox), (320, 230), 20)
-    draw_text(screen, 'Nhấn ENTER để tiếp tục', (320, 600), 20)
+    draw_text(screen, 'Nhấn ENTER để tiếp tục', (320, 290), 20)
     result.countMove = steps2
     spf.export_result_to_csv(result,mapNumber+1)
     renderMap(map)
 
 
-def notfoundGame():
+def notfoundGame(map):
     screen.blit(notfound_background, (0, 0))
+    renderDashboard(map)
     draw_text(screen, 'Không thể tìm ra lời giải', (320, 100), 40)
     draw_text(screen, 'Nhấn ENTER để tiếp tục', (320, 600), 20)
 
