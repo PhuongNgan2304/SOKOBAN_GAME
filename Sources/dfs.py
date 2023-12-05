@@ -35,7 +35,8 @@ class state:
 def DFS_search(board, list_check_point):
    start_time = time.time()
    box_push_count = 0
-   
+   result = spf.Result()
+    
    if spf.check_win(board, list_check_point):
        print("Found Win")
        return [board]
@@ -73,7 +74,7 @@ def DFS_search(board, list_check_point):
                 print("  Số trạng thái đã duyệt : {} ".format(len(visited)))
                 process = psutil.Process(os.getpid())
                 memory_usage = process.memory_info().rss / (1024**2)
-                result = spf.Result()
+               
                 result.countFindBox = box_push_count
                 result.approved_states = len(visited)
                 result.memory = memory_usage

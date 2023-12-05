@@ -20,10 +20,10 @@ import support_function as spf
 TIME_OUT = 120
 # !!!PHẦN LẤY PATH THÌ THẦY HÃY ĐỔI SANG ĐƯỜNG DẪN MÀ THẦY LƯU THƯ MỤC Ạ.
 ''' lấy path của folder testcases và checkpoints '''
-# path_board = os.getcwd() + '\\..\\Testcases'
-# path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
-path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Testcases'
-path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Checkpoints'
+path_board = os.getcwd() + '\\..\\Testcases'
+path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
+# path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Testcases'
+# path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
 
@@ -250,7 +250,7 @@ def sokoban():
             elif algorithm == "Uniform Cost Search":
                 result = ucs.UCS_Search(maps[mapNumber], list_check_point)
             elif algorithm == "DLS":
-                max_deep = 300
+                max_deep = 10
                 result = dls.DLS_Search(maps[mapNumber], list_check_point, max_deep)
             elif algorithm == "DFS":
                 result = dfs.DFS_search(maps[mapNumber], list_check_point)
