@@ -15,16 +15,15 @@ import time
 import support_function as spf
 
 # https://github.com/PhuongNgan2304/SOKOBAN_GAME
-# https://docs.google.com/document/d/118NqEutRUE-oxi2sj6qA7EeEyp5Fw9HK/edit#heading=h.49x2ik5
 
 ''' Timeout của mỗi map là 30 phút  '''
 TIME_OUT = 120
-# !!!PHẦN LẤY PATH MỌI NGƯỜI CHỈNH LẠI CÁI ĐƯỜNG DẪN NHA. LƯU Ở ĐÂU THÌ DẪN Ở ĐÓ, RỒI CHẠY BÌNH THƯỜNG
+# !!!PHẦN LẤY PATH THÌ THẦY HÃY ĐỔI SANG ĐƯỜNG DẪN MÀ THẦY LƯU THƯ MỤC Ạ.
 ''' lấy path của folder testcases và checkpoints '''
-path_board = os.getcwd() + '\\..\\Testcases'
-path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
-# path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Testcases'
-# path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Checkpoints'
+# path_board = os.getcwd() + '\\..\\Testcases'
+# path_checkpoint = os.getcwd() + '\\..\\Checkpoints'
+path_board = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Testcases'
+path_checkpoint = 'D:/HOC_KY_1_NAM_3/AI/PROJECT_NEW/SOKOBAN_GAME/Checkpoints'
 
 ''' lấy data từ các testcase để trả lại các bảng gồm các map'''
 

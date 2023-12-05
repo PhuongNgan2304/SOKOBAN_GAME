@@ -9,7 +9,7 @@ import math
 
 '''
 //=========================================//
-//     GIẢI THUẬT GREEDY BEST FIRST SEARCH*      //
+//     GIẢI THUẬT GREEDY BEST FIRST SEARCH* //
 //            IMPLEMENTATION             //
 //======================================//
 '''
