@@ -49,11 +49,21 @@ Hướng dẫn chạy ở [README.txt](README.txt) file
 
 Giao diện khởi tạo trò chơi
 
+![image](https://github.com/PhuongNgan2304/SOKOBAN_GAME/assets/101733700/cacafe70-8f31-4bd6-8de0-f0abee9b47db)
+
 Giao diện khi loading trò chơi
+
+![image](https://github.com/PhuongNgan2304/SOKOBAN_GAME/assets/101733700/b18d2801-a450-4906-b860-2ee17e2d7e56)
 
 Giao diện không tìm thấy lời giải
 
+![image](https://github.com/PhuongNgan2304/SOKOBAN_GAME/assets/101733700/f03a94bd-9f54-4c5f-b9cc-a445d19dfc0e)
+
 Giao diện bắt đầu trò chơi
 
+![image](https://github.com/PhuongNgan2304/SOKOBAN_GAME/assets/101733700/b7d92dea-ff3e-4705-84c8-521e59e67a3d)
+
 Giao diện khi tìm được kết quả
+
+![image](https://github.com/PhuongNgan2304/SOKOBAN_GAME/assets/101733700/b40124cb-67c9-49bf-8a3c-06d6cbc93a32)
 
